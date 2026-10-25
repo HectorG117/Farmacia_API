@@ -1,0 +1,20 @@
+$kind: collection
+description: Recetas y sus productos. Ejecuta Auth > Login primero.
+variables:
+  base_url: http://localhost:8000/api
+  token: ""
+  nombre_usuario: admin
+  password: password
+  medico_id: "1"
+  paciente_id: "1"
+  producto_id: "1"
+  cita_id: "1"
+  expediente_id: "1"
+  receta_id: "1"
+  detalle_id: "1"
+auth:
+  - id: 025bc84a-3727-4855-a3fd-ee740cc03c38
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{token}}"

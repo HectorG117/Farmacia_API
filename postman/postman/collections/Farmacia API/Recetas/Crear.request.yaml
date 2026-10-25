@@ -1,0 +1,35 @@
+$kind: http-request
+url: "{{base_url}}/recetas"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "medico_id": "{{medico_id}}",
+      "paciente_id": "{{paciente_id}}",
+      "fecha_emision": "2026-10-24",
+      "diagnostico": "Migraña tensional",
+      "indicaciones_generales": "Reposo y buena hidratación",
+      "estado": "Vigente",
+      "productos": [
+        {
+          "producto_id": "{{producto_id}}",
+          "cantidad": 2,
+          "dosis": "1 tableta de 500 mg",
+          "frecuencia": "Cada 8 horas",
+          "duracion": "Durante 5 días",
+          "instrucciones": "Tomar después de los alimentos"
+        }
+      ]
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+        pm.collectionVariables.set('receta_id', pm.response.json().data.id_receta);
+      }
+    language: text/javascript
+order: 3000

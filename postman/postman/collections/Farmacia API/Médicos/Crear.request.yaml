@@ -1,0 +1,30 @@
+$kind: http-request
+url: "{{base_url}}/medicos"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "tipo_usuario": "nuevo",
+      "nombre": "Laura",
+      "apellido": "Gómez",
+      "email": "laura.gomez@farmacia.test",
+      "telefono": "5512345678",
+      "password": "secreto123",
+      "password_confirmation": "secreto123",
+      "activo": true,
+      "cedula": "CED-12345",
+      "especialidad_id": 1,
+      "consultorio": "Consultorio 3"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+        pm.collectionVariables.set('medico_id', pm.response.json().data.id_medico);
+      }
+    language: text/javascript
+order: 3000

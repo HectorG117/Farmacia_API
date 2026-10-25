@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{base_url}}/recetas/{{receta_id}}/detalles"
+method: GET
+headers:
+  Accept: application/json
+order: 1000

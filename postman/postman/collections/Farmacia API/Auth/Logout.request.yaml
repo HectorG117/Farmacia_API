@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{base_url}}/logout"
+method: POST
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.collectionVariables.set('token', '');
+    language: text/javascript
+order: 3000

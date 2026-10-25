@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/medicos"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: buscar
+    value: ""
+    disabled: true
+  - key: especialidad_id
+    value: ""
+    disabled: true
+  - key: estado
+    value: "activos"
+order: 1000

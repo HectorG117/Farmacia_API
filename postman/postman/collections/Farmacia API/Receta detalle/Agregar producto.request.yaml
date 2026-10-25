@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{base_url}}/recetas/{{receta_id}}/detalles"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "producto_id": "{{producto_id}}",
+      "cantidad": 1,
+      "dosis": "1 tableta de 500 mg",
+      "frecuencia": "Cada 8 horas",
+      "duracion": "Durante 5 días",
+      "instrucciones": "Tomar después de los alimentos"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+        pm.collectionVariables.set('detalle_id', pm.response.json().data.id_detalle);
+      }
+    language: text/javascript
+order: 3000

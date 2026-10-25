@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{base_url}}/medicos/{{medico_id}}"
+method: PUT
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "Pablo",
+      "apellido": "Gómez",
+      "email": "laura.gomez@farmacia.test",
+      "telefono": "5512345678",
+      "activo": true,
+      "cedula": "CED-12345",
+      "especialidad_id": 1,
+      "consultorio": "Consultorio 5"
+    }

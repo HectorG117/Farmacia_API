@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/citas/{{cita_id}}"
+method: PUT
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "paciente_id": "{{paciente_id}}",
+      "medico_id": "{{medico_id}}",
+      "fecha": "2026-11-10",
+      "hora": "11:00",
+      "estado": "Confirmada",
+      "motivo": "Dolor de cabeza frecuente"
+    }
+order: 4000

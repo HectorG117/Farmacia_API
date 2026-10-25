@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{base_url}}/recetas"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: estado
+    value: ""
+    disabled: true
+  - key: medico_id
+    value: ""
+    disabled: true
+  - key: paciente_id
+    value: ""
+    disabled: true
+order: 1000

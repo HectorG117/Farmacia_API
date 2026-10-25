@@ -430,7 +430,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"paciente_id\": {{paciente_id}},\n  \"medico_id\": {{medico_id}},\n  \"fecha\": \"2026-11-10\",\n  \"hora\": \"10:30\",\n  \"estado\": \"Pendiente\",\n  \"motivo\": \"Dolor de cabeza frecuente\"\n}",
+              "raw": "{\n  \"paciente_id\": \"{{paciente_id}}\",\n  \"medico_id\": \"{{medico_id}}\",\n  \"fecha\": \"2026-11-10\",\n  \"hora\": \"10:30\",\n  \"estado\": \"Pendiente\",\n  \"motivo\": \"Dolor de cabeza frecuente\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -478,7 +478,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"paciente_id\": {{paciente_id}},\n  \"medico_id\": {{medico_id}},\n  \"fecha\": \"2026-11-10\",\n  \"hora\": \"11:00\",\n  \"estado\": \"Confirmada\",\n  \"motivo\": \"Dolor de cabeza frecuente\"\n}",
+              "raw": "{\n  \"paciente_id\": \"{{paciente_id}}\",\n  \"medico_id\": \"{{medico_id}}\",\n  \"fecha\": \"2026-11-10\",\n  \"hora\": \"11:00\",\n  \"estado\": \"Confirmada\",\n  \"motivo\": \"Dolor de cabeza frecuente\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -589,7 +589,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_cita\": {{cita_id}},\n  \"fecha\": \"2026-10-24 10:00:00\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"tratamiento\": \"Paracetamol 500 mg cada 8 horas por 5 días\",\n  \"observaciones\": \"Revisión en 2 semanas\"\n}",
+              "raw": "{\n  \"id_cita\": \"{{cita_id}}\",\n  \"fecha\": \"2026-10-24 10:00:00\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"tratamiento\": \"Paracetamol 500 mg cada 8 horas por 5 días\",\n  \"observaciones\": \"Revisión en 2 semanas\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -758,7 +758,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"medico_id\": {{medico_id}},\n  \"paciente_id\": {{paciente_id}},\n  \"fecha_emision\": \"2026-10-24\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"indicaciones_generales\": \"Reposo y buena hidratación\",\n  \"estado\": \"Vigente\",\n  \"productos\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 días\",\n      \"instrucciones\": \"Tomar después de los alimentos\"\n    }\n  ]\n}",
+              "raw": "{\n  \"medico_id\": \"{{medico_id}}\",\n  \"paciente_id\": \"{{paciente_id}}\",\n  \"fecha_emision\": \"2026-10-24\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"indicaciones_generales\": \"Reposo y buena hidratación\",\n  \"estado\": \"Vigente\",\n  \"productos\": [\n    {\n      \"producto_id\": \"{{producto_id}}\",\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 días\",\n      \"instrucciones\": \"Tomar después de los alimentos\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -806,7 +806,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"medico_id\": {{medico_id}},\n  \"paciente_id\": {{paciente_id}},\n  \"fecha_emision\": \"2026-10-24\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"indicaciones_generales\": \"Reposo y buena hidratación\",\n  \"estado\": \"Surtida\",\n  \"productos\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 días\",\n      \"instrucciones\": \"Tomar después de los alimentos\"\n    }\n  ]\n}",
+              "raw": "{\n  \"medico_id\": \"{{medico_id}}\",\n  \"paciente_id\": \"{{paciente_id}}\",\n  \"fecha_emision\": \"2026-10-24\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"indicaciones_generales\": \"Reposo y buena hidratación\",\n  \"estado\": \"Surtida\",\n  \"productos\": [\n    {\n      \"producto_id\": \"{{producto_id}}\",\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 días\",\n      \"instrucciones\": \"Tomar después de los alimentos\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -916,7 +916,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"producto_id\": {{producto_id}},\n  \"cantidad\": 1,\n  \"dosis\": \"1 tableta de 500 mg\",\n  \"frecuencia\": \"Cada 8 horas\",\n  \"duracion\": \"Durante 5 días\",\n  \"instrucciones\": \"Tomar después de los alimentos\"\n}",
+              "raw": "{\n  \"producto_id\": \"{{producto_id}}\",\n  \"cantidad\": 1,\n  \"dosis\": \"1 tableta de 500 mg\",\n  \"frecuencia\": \"Cada 8 horas\",\n  \"duracion\": \"Durante 5 días\",\n  \"instrucciones\": \"Tomar después de los alimentos\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -966,7 +966,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"producto_id\": {{producto_id}},\n  \"cantidad\": 3,\n  \"dosis\": \"1 tableta de 500 mg\",\n  \"frecuencia\": \"Cada 8 horas\",\n  \"duracion\": \"Durante 5 días\",\n  \"instrucciones\": \"Tomar después de los alimentos\"\n}",
+              "raw": "{\n  \"producto_id\": \"{{producto_id}}\",\n  \"cantidad\": 3,\n  \"dosis\": \"1 tableta de 500 mg\",\n  \"frecuencia\": \"Cada 8 horas\",\n  \"duracion\": \"Durante 5 días\",\n  \"instrucciones\": \"Tomar después de los alimentos\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

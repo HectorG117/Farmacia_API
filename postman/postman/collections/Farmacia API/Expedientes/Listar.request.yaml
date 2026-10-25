@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{base_url}}/expedientes"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: buscar
+    value: ""
+    disabled: true
+order: 1000

@@ -1,0 +1,505 @@
+{
+  "info": {
+    "name": "Farmacia API - Recetas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Recetas y sus productos. Ejecuta Auth > Login primero.",
+    "_postman_id": "7c1d2b9e-4a3f-4e5b-9c1a-2f6d8e0b3a71"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "nombre_usuario",
+      "value": "admin"
+    },
+    {
+      "key": "password",
+      "value": "password"
+    },
+    {
+      "key": "medico_id",
+      "value": "1"
+    },
+    {
+      "key": "paciente_id",
+      "value": "1"
+    },
+    {
+      "key": "producto_id",
+      "value": "1"
+    },
+    {
+      "key": "cita_id",
+      "value": "1"
+    },
+    {
+      "key": "expediente_id",
+      "value": "1"
+    },
+    {
+      "key": "receta_id",
+      "value": "1"
+    },
+    {
+      "key": "detalle_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_usuario\": \"{{nombre_usuario}}\",\n  \"password\": \"{{password}}\",\n  \"dispositivo\": \"Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('token', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi perfil (me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('token', '');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Recetas",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas?estado=&medico_id=&paciente_id=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "medico_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "paciente_id",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"medico_id\": \"{{medico_id}}\",\n  \"paciente_id\": \"{{paciente_id}}\",\n  \"fecha_emision\": \"2026-10-24\",\n  \"diagnostico\": \"Migra\u00f1a tensional\",\n  \"indicaciones_generales\": \"Reposo y buena hidrataci\u00f3n\",\n  \"estado\": \"Vigente\",\n  \"productos\": [\n    {\n      \"producto_id\": \"{{producto_id}}\",\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 d\u00edas\",\n      \"instrucciones\": \"Tomar despu\u00e9s de los alimentos\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('receta_id', pm.response.json().data.id_receta);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"medico_id\": \"{{medico_id}}\",\n  \"paciente_id\": \"{{paciente_id}}\",\n  \"fecha_emision\": \"2026-10-24\",\n  \"diagnostico\": \"Migra\u00f1a tensional\",\n  \"indicaciones_generales\": \"Reposo y buena hidrataci\u00f3n\",\n  \"estado\": \"Surtida\",\n  \"productos\": [\n    {\n      \"producto_id\": \"{{producto_id}}\",\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 d\u00edas\",\n      \"instrucciones\": \"Tomar despu\u00e9s de los alimentos\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar (nivel 3)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receta Detalle",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles/{{detalle_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles",
+                "{{detalle_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Agregar producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_id\": \"{{producto_id}}\",\n  \"cantidad\": 1,\n  \"dosis\": \"1 tableta de 500 mg\",\n  \"frecuencia\": \"Cada 8 horas\",\n  \"duracion\": \"Durante 5 d\u00edas\",\n  \"instrucciones\": \"Tomar despu\u00e9s de los alimentos\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('detalle_id', pm.response.json().data.id_detalle);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles/{{detalle_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles",
+                "{{detalle_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_id\": \"{{producto_id}}\",\n  \"cantidad\": 3,\n  \"dosis\": \"1 tableta de 500 mg\",\n  \"frecuencia\": \"Cada 8 horas\",\n  \"duracion\": \"Durante 5 d\u00edas\",\n  \"instrucciones\": \"Tomar despu\u00e9s de los alimentos\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar (nivel 3)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles/{{detalle_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles",
+                "{{detalle_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

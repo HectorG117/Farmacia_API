@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{base_url}}/citas"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "paciente_id": "{{paciente_id}}",
+      "medico_id": "{{medico_id}}",
+      "fecha": "2026-11-10",
+      "hora": "10:30",
+      "estado": "Pendiente",
+      "motivo": "Dolor de cabeza frecuente"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+        pm.collectionVariables.set('cita_id', pm.response.json().data.id_cita);
+      }
+    language: text/javascript
+order: 3000
