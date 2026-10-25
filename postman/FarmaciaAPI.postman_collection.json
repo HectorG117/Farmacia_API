@@ -1,0 +1,1005 @@
+{
+  "info": {
+    "name": "Farmacia API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "1) Ejecuta Auth > Login (guarda el token solo). 2) Usa las demás peticiones. Ajusta los IDs en la pestaña Variables de la colección."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "nombre_usuario",
+      "value": "admin"
+    },
+    {
+      "key": "password",
+      "value": "password"
+    },
+    {
+      "key": "medico_id",
+      "value": "1"
+    },
+    {
+      "key": "paciente_id",
+      "value": "1"
+    },
+    {
+      "key": "producto_id",
+      "value": "1"
+    },
+    {
+      "key": "cita_id",
+      "value": "1"
+    },
+    {
+      "key": "expediente_id",
+      "value": "1"
+    },
+    {
+      "key": "receta_id",
+      "value": "1"
+    },
+    {
+      "key": "detalle_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_usuario\": \"{{nombre_usuario}}\",\n  \"password\": \"{{password}}\",\n  \"dispositivo\": \"Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('token', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi perfil (me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('token', '');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Médicos",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medicos?buscar=&especialidad_id=&estado=activos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medicos"
+              ],
+              "query": [
+                {
+                  "key": "buscar",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "especialidad_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "estado",
+                  "value": "activos"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medicos/{{medico_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medicos",
+                "{{medico_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medicos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medicos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo_usuario\": \"nuevo\",\n  \"nombre\": \"Laura\",\n  \"apellido\": \"Gómez\",\n  \"email\": \"laura.gomez@farmacia.test\",\n  \"telefono\": \"5512345678\",\n  \"password\": \"secreto123\",\n  \"password_confirmation\": \"secreto123\",\n  \"activo\": true,\n  \"cedula\": \"CED-12345\",\n  \"especialidad_id\": 1,\n  \"consultorio\": \"Consultorio 3\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('medico_id', pm.response.json().data.id_medico);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medicos/{{medico_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medicos",
+                "{{medico_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Laura\",\n  \"apellido\": \"Gómez\",\n  \"email\": \"laura.gomez@farmacia.test\",\n  \"telefono\": \"5512345678\",\n  \"activo\": true,\n  \"cedula\": \"CED-12345\",\n  \"especialidad_id\": 1,\n  \"consultorio\": \"Consultorio 5\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar (nivel 3)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medicos/{{medico_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medicos",
+                "{{medico_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Citas",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/citas?estado=&fecha=&medico_id=&sin_expediente=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "citas"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fecha",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "medico_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "sin_expediente",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/citas/{{cita_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "citas",
+                "{{cita_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/citas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "citas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paciente_id\": {{paciente_id}},\n  \"medico_id\": {{medico_id}},\n  \"fecha\": \"2026-11-10\",\n  \"hora\": \"10:30\",\n  \"estado\": \"Pendiente\",\n  \"motivo\": \"Dolor de cabeza frecuente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('cita_id', pm.response.json().data.id_cita);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/citas/{{cita_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "citas",
+                "{{cita_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paciente_id\": {{paciente_id}},\n  \"medico_id\": {{medico_id}},\n  \"fecha\": \"2026-11-10\",\n  \"hora\": \"11:00\",\n  \"estado\": \"Confirmada\",\n  \"motivo\": \"Dolor de cabeza frecuente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar (nivel 3)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/citas/{{cita_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "citas",
+                "{{cita_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Expedientes",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/expedientes?buscar=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "expedientes"
+              ],
+              "query": [
+                {
+                  "key": "buscar",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/expedientes/{{expediente_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "expedientes",
+                "{{expediente_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/expedientes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "expedientes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_cita\": {{cita_id}},\n  \"fecha\": \"2026-10-24 10:00:00\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"tratamiento\": \"Paracetamol 500 mg cada 8 horas por 5 días\",\n  \"observaciones\": \"Revisión en 2 semanas\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('expediente_id', pm.response.json().data.id_expediente);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/expedientes/{{expediente_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "expedientes",
+                "{{expediente_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fecha\": \"2026-10-24 10:00:00\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"tratamiento\": \"Paracetamol 500 mg cada 8 horas por 5 días\",\n  \"observaciones\": \"Revisión en 1 semana\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar (nivel 3)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/expedientes/{{expediente_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "expedientes",
+                "{{expediente_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recetas",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas?estado=&medico_id=&paciente_id=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "medico_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "paciente_id",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"medico_id\": {{medico_id}},\n  \"paciente_id\": {{paciente_id}},\n  \"fecha_emision\": \"2026-10-24\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"indicaciones_generales\": \"Reposo y buena hidratación\",\n  \"estado\": \"Vigente\",\n  \"productos\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 días\",\n      \"instrucciones\": \"Tomar después de los alimentos\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('receta_id', pm.response.json().data.id_receta);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"medico_id\": {{medico_id}},\n  \"paciente_id\": {{paciente_id}},\n  \"fecha_emision\": \"2026-10-24\",\n  \"diagnostico\": \"Migraña tensional\",\n  \"indicaciones_generales\": \"Reposo y buena hidratación\",\n  \"estado\": \"Surtida\",\n  \"productos\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 días\",\n      \"instrucciones\": \"Tomar después de los alimentos\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar (nivel 3)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receta detalle",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles/{{detalle_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles",
+                "{{detalle_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Agregar producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_id\": {{producto_id}},\n  \"cantidad\": 1,\n  \"dosis\": \"1 tableta de 500 mg\",\n  \"frecuencia\": \"Cada 8 horas\",\n  \"duracion\": \"Durante 5 días\",\n  \"instrucciones\": \"Tomar después de los alimentos\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('detalle_id', pm.response.json().data.id_detalle);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles/{{detalle_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles",
+                "{{detalle_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_id\": {{producto_id}},\n  \"cantidad\": 3,\n  \"dosis\": \"1 tableta de 500 mg\",\n  \"frecuencia\": \"Cada 8 horas\",\n  \"duracion\": \"Durante 5 días\",\n  \"instrucciones\": \"Tomar después de los alimentos\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar (nivel 3)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recetas/{{receta_id}}/detalles/{{detalle_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recetas",
+                "{{receta_id}}",
+                "detalles",
+                "{{detalle_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: farmacia
+    env: docker
+    plan: free
+    buildCommand: |
+      cp .env.example .env || true
+      php artisan key:generate || true
+
+      mkdir -p config
+
+      printf "%s\n" "<?php
+
+return [
+    'manifest' => public_path('build/manifest.json'),
+    'build_path' => 'build',
+    'assets_url' => env('ASSET_URL', 'https://farmacia-5nn7.onrender.com'),
+];" > config/vite.php
+
+      echo "ASSET_URL=https://farmacia-5nn7.onrender.com" >> .env
+
+      php artisan config:clear
+      php artisan cache:clear
+      php artisan route:clear
+      php artisan view:clear
+      php artisan config:cache
+
+    startCommand: |
+      chown -R www-data:www-data /var/www/html
+      chmod -R 775 storage bootstrap/cache
+      php artisan serve --host=0.0.0.0 --port=8080
+
+
+

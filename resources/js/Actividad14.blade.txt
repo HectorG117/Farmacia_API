@@ -1,0 +1,128 @@
+@extends('/inicio')
+
+@section('titulo','Productos')
+
+@section('contenido')
+
+  <!-- MAIN -->
+  <main class="flex flex-col flex-grow p-6" id="productos-container">
+
+    
+  <!-- BUSCADOR -->
+    <div class="flex justify-center mb-4">
+    <input 
+      type="text" 
+      id="buscador" 
+      placeholder="Buscar producto..." 
+      class="border border-gray-400 rounded px-3 py-2 w-1/2 focus:outline-none focus:ring focus:ring-blue-300"
+     >
+    </div>
+    <!-- BOTONES FILTRO -->
+    <div class="flex flex-wrap gap-2 justify-center mb-6">
+      <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition filtro-btn" data-categoria="todos">Todos</button>
+      <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition filtro-btn" data-categoria="medicamentos">Medicamentos</button>
+      <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition filtro-btn" data-categoria="vitaminas">Vitaminas</button>
+      <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition filtro-btn" data-categoria="higiene">Higiene</button>
+      <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition filtro-btn" data-categoria="equipo">Equipo Médico</button>
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center" id="productos-grid">
+
+      <!-- MEDICAMENTOS -->
+      <div class="producto medicamentos paracetamol flex flex-col items-center" data-categoria="medicamentos" data-nombre="Paracetamol 500mg" data-precio="$100" data-descripcion="Analgésico y antipirético que ayuda a reducir el dolor y la fiebre." data-imagen="{{ asset('assets/img/productos/paracetamol.webp') }}">
+        <img src="/pictures/Productos/paracetamol.webp" alt="Paracetamol" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Paracetamol 500mg - $100</p>
+      </div>
+      <div class="producto medicamentos ibuprofeno flex flex-col items-center" data-categoria="medicamentos" data-nombre="Ibuprofeno 400mg" data-precio="$120" data-descripcion="Antiinflamatorio no esteroideo que ayuda a aliviar el dolor y la inflamación." data-imagen="{{ asset('assets/img/productos/ibuprofeno.png') }}">
+        <img src="/pictures/Productos/ibuprofeno.png" alt="Ibuprofeno" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Ibuprofeno 400mg - $120</p>
+      </div>
+      <div class="producto medicamentos amoxilina flex flex-col items-center" data-categoria="medicamentos" data-nombre="Amoxicilina 500mg" data-precio="$150" data-imagen="/pictures/Productos/amoxicilina.webp">
+        <img src="/pictures/Productos/amoxicilina.webp" alt="Amoxicilina" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Amoxicilina 500mg - $150</p>
+      </div>
+      <div class="producto medicamentos omeprazol flex flex-col items-center" data-categoria="medicamentos" data-nombre="Omeprazol 20mg" data-precio="$130" data-imagen="/pictures/Productos/omeprazol.png">
+        <img src="/pictures/Productos/omeprazol.png" alt="Omeprazol" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Omeprazol 20mg - $130</p>
+      </div>
+      <div class="producto medicamentos suero-oral flex flex-col items-center" data-categoria="medicamentos" data-nombre="Suero Oral Vida 4 sobres" data-precio="$60" data-imagen="/pictures/Productos/suero.webp">
+        <img src="/pictures/Productos/suero.webp" alt="Suero Oral" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Suero Oral Vida 4 sobres - $60</p>
+      </div>
+
+      <!-- VITAMINAS -->
+      <div class="producto vitaminas vitamina-c flex flex-col items-center" data-categoria="vitaminas" data-nombre="Vitamina C 300mg" data-precio="$400" data-imagen="/pictures/Productos/vitaminaC.jpg">
+        <img src="/pictures/Productos/vitaminaC.jpg" alt="Vitamina C" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Vitamina C 300mg - $400</p>
+      </div>
+      <div class="producto vitaminas complejo-b flex flex-col items-center" data-categoria="vitaminas" data-nombre="Complejo B (30 cápsulas)" data-precio="$180" data-imagen="/pictures/Productos/complejoB.jpg">
+        <img src="/pictures/Productos/complejoB.jpg" alt="Complejo B" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Complejo B (30 cápsulas) - $180</p>
+      </div>
+      <div class="producto vitaminas magnesio flex flex-col items-center" data-categoria="vitaminas" data-nombre="Magnesio" data-precio="$399" data-imagen="/pictures/Productos/magnesio.jpg">
+        <img src="/pictures/Productos/magnesio.jpg" alt="Magnesio" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Magnesio - $399</p>
+      </div>
+      <div class="producto vitaminas multivitaminico flex flex-col items-center" data-categoria="vitaminas" data-nombre="Multivitamínico Adulto" data-precio="$365" data-imagen="/pictures/Productos/multivitaminico.jpg">
+        <img src="/pictures/Productos/multivitaminico.jpg" alt="Multivitamínico" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Multivitamínico Adulto - $365</p>
+      </div>
+      <div class="producto vitaminas calcio-vitamina-d3 flex flex-col items-center" data-categoria="vitaminas" data-nombre="Calcio + Vitamina D3" data-precio="$250" data-imagen="/pictures/Productos/calcioD3.jpg">
+        <img src="/pictures/Productos/calcioD3.jpg" alt="Calcio D3" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Calcio + Vitamina D3 - $250</p>
+      </div>
+
+      <!-- HIGIENE -->
+      <div class="producto higiene alcohol-en-gel-250ml flex flex-col items-center" data-categoria="higiene" data-nombre="Alcohol en Gel 250ml" data-precio="$25" data-imagen="/pictures/Productos/alcohol-gel.jpeg">
+        <img src="/pictures/Productos/alcohol-gel.jpeg" alt="Alcohol en Gel" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Alcohol en Gel 250ml - $25</p>
+      </div>
+      <div class="producto higiene jabon-antibacterial flex flex-col items-center" data-categoria="higiene" data-nombre="Jabón Antibacterial" data-precio="$40" data-imagen="/pictures/Productos/jabon-antibacterial.jpg">
+        <img src="/pictures/Productos/jabon-antibacterial.jpg" alt="Jabón" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Jabón Antibacterial - $40</p>
+      </div>
+      <div class="producto higiene mascarilla-facial flex flex-col items-center" data-categoria="higiene" data-nombre="Mascarilla facial" data-precio="$260" data-imagen="/pictures/Productos/mascarilla.png">
+        <img src="/pictures/Productos/mascarilla.png" alt="Mascarilla" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Mascarilla facial - $260</p>
+      </div>
+      <div class="producto higiene cepillo-dental flex flex-col items-center" data-categoria="higiene" data-nombre="Cepillo Dental" data-precio="$35" data-imagen="/pictures/Productos/cepillo-dental.webp">
+        <img src="/pictures/Productos/cepillo-dental.webp" alt="Cepillo" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Cepillo Dental - $35</p>
+      </div>
+      <div class="producto higiene pasta-dental flex flex-col items-center" data-categoria="higiene" data-nombre="Pasta Dental 150g" data-precio="$120" data-imagen="/pictures/Productos/pasta-dental.webp">
+        <img src="/pictures/Productos/pasta-dental.webp" alt="Pasta" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Pasta Dental 150g - $120</p>
+      </div>
+
+      <!-- EQUIPO MÉDICO -->
+      <div class="producto equipo termometro-digital flex flex-col items-center" data-categoria="equipo" data-nombre="Termómetro Digital" data-precio="$220" data-imagen="/pictures/Productos/termometro-digital.jpg">
+        <img src="/pictures/Productos/termometro-digital.jpg" alt="Termómetro" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Termómetro Digital - $220</p>
+      </div>
+      <div class="producto equipo oximetro-de-pulso flex flex-col items-center" data-categoria="equipo" data-nombre="Oxímetro de Pulso" data-precio="$450" data-imagen="/pictures/Productos/oximetro.webp">
+        <img src="/pictures/Productos/oximetro.webp" alt="Oxímetro" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Oxímetro de Pulso - $450</p>
+      </div>
+      <div class="producto equipo tensiometro-de-brazo flex flex-col items-center" data-categoria="equipo" data-nombre="Tensiómetro de Brazo" data-precio="$600" data-imagen="/pictures/Productos/tensiometro.png">
+        <img src="/pictures/Productos/tensiometro.png" alt="Tensiómetro" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Tensiómetro de Brazo - $600</p>
+      </div>
+      <div class="producto equipo curitas flex flex-col items-center" data-categoria="equipo" data-nombre="Curitas (30 unidades)" data-precio="$50" data-imagen="/pictures/Productos/curitas.webp">
+        <img src="/pictures/Productos/curitas.webp" alt="Curitas" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Curitas (30 unidades) - $50</p>
+      </div>
+      <div class="producto equipo guantes-de-latex flex flex-col items-center" data-categoria="equipo" data-nombre="Guantes de Látex (100 pzas)" data-precio="$150" data-imagen="/pictures/Productos/guantes-latex.jpg">
+        <img src="/pictures/Productos/guantes-latex.jpg" alt="Guantes" class="h-48 w-48 object-contain mb-2">
+        <p class="text-center">Guantes de Látex (100 pzas) - $150</p>
+      </div>
+
+    </div>
+
+  </main> 
+
+
+
+@endsection
+
+@vite(['resources/css/app.css', 'resources/js/app.js'])

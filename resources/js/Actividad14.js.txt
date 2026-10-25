@@ -1,0 +1,55 @@
+document.addEventListener('DOMContentLoaded', () => {
+
+  const botonesFiltro = document.getElementsByClassName('filtro-btn');
+  const productos = document.getElementsByClassName('producto');
+  const buscador = document.getElementById('buscador');
+
+
+
+  // Mostrar todos los productos
+  function mostrarTodos() {
+    for (let producto of productos) {
+      producto.style.display = 'flex';
+    }
+  }
+
+  // Mostrar productos por categoría
+  function mostrarCategoria(categoria) {
+    for (let producto of productos) {
+      if (producto.classList.contains(categoria)) {
+        producto.style.display = 'flex';
+      } else {
+        producto.style.display = 'none';
+      }
+    }
+  }
+
+  // Buscar producto por nombre
+  function buscarProducto() {
+    const texto = buscador.value.toLowerCase();
+    for (let producto of productos) {
+      const nombre = producto.textContent.toLowerCase();
+      if (nombre.includes(texto)) {
+        producto.style.display = 'flex';
+      } else {
+        producto.style.display = 'none';
+      }
+    }
+  }
+
+
+  // Botones de categorías
+  for (let boton of botonesFiltro) {
+    boton.addEventListener('click', () => {
+      const categoria = boton.getAttribute('data-categoria');
+      if (categoria === 'todos') {
+        mostrarTodos();
+      } else {
+        mostrarCategoria(categoria);
+      }
+    });
+  }
+
+  // Evento de búsqueda
+  buscador.addEventListener('keyup', buscarProducto);
+});

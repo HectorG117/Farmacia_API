@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+
+
+@import "flowbite/src/themes/default";
+
+@plugin "flowbite/plugin";
+
+@source "../node_modules/flowbite";
+
+:root {
+	--admin-ink: #17324d;
+	--admin-muted: #65758b;
+	--admin-line: #dbe5ed;
+	--admin-surface: #ffffff;
+	--admin-cloud: #f4f8fb;
+	--admin-teal: #0f8b8d;
+	--admin-orange: #f29f67;
+}
+
+.admin-shell {
+	color: var(--admin-ink);
+	background: linear-gradient(135deg, #f4f8fb 0%, #eef5f5 55%, #fff8f2 100%);
+	min-height: 100vh;
+}
+
+.admin-sidebar {
+	background: var(--admin-ink);
+	background-image: linear-gradient(160deg, #17324d 0%, #1f5263 100%);
+}
+
+.admin-nav-link {
+	color: #c9d8e3;
+	transition: background-color .2s ease, color .2s ease;
+}
+
+.admin-nav-link:hover,
+.admin-nav-link.is-active {
+	color: #ffffff;
+	background: rgba(255, 255, 255, .13);
+}
+
+.admin-panel {
+	background: var(--admin-surface);
+	border: 1px solid var(--admin-line);
+	box-shadow: 0 14px 40px rgba(23, 50, 77, .07);
+}
+
+.admin-table th {
+	color: var(--admin-muted);
+	background: var(--admin-cloud);
+	font-size: .72rem;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+
+.admin-table td,
+.admin-table th {
+	border-bottom: 1px solid var(--admin-line);
+	padding: .9rem 1rem;
+	text-align: left;
+}
+
+.admin-field {
+	border: 1px solid var(--admin-line);
+	border-radius: .5rem;
+	color: var(--admin-ink);
+	padding: .7rem .8rem;
+	width: 100%;
+}
+
+.admin-field:focus {
+	border-color: var(--admin-teal);
+	outline: 2px solid rgba(15, 139, 141, .15);
+}
