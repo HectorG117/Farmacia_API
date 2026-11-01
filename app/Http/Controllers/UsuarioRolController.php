@@ -3,46 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Models\UsuarioRol;
-use App\Models\Usuario;
-use App\Models\Rol;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Asignación de roles a usuarios (responde JSON para la API).
+ */
 class UsuarioRolController extends Controller
 {
-    public function index()
+    // GET /api/usuario-roles
+    public function index(): JsonResponse
     {
-        $usuarioRoles = UsuarioRol::with(['usuario', 'rol'])->get();
-        return view('admin.usuario_roles.index', compact('usuarioRoles'));
+        return response()->json(['data' => UsuarioRol::with(['usuario', 'rol'])->get()]);
     }
 
-    public function create()
+    // POST /api/usuario-roles  -> 201 si se asignó, 200 si el usuario ya tenía ese rol
+    public function store(Request $request): JsonResponse
     {
-        $usuarios = Usuario::all();
-        $roles = Rol::all();
-        return view('admin.usuario_roles.create', compact('usuarios', 'roles'));
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'id_usuario' => 'required|exists:usuarios,id_usuario',
-            'id_rol' => 'required|exists:roles,id_rol',
+        $datos = $request->validate([
+            'id_usuario' => 'required|integer|exists:usuarios,id_usuario',
+            'id_rol'     => 'required|integer|exists:roles,id_rol',
         ]);
 
-        UsuarioRol::firstOrCreate([
-            'id_usuario' => $request->id_usuario,
-            'id_rol' => $request->id_rol,
-        ]);
+        $asignacion = UsuarioRol::firstOrCreate($datos);
 
-        return redirect()->route('admin.usuario-roles.index')->with('success', 'Rol asignado correctamente.');
+        return response()->json([
+            'mensaje' => $asignacion->wasRecentlyCreated
+                ? 'Rol asignado correctamente.'
+                : 'El usuario ya tenía asignado ese rol.',
+            'data'    => UsuarioRol::with(['usuario', 'rol'])->where($datos)->first(),
+        ], $asignacion->wasRecentlyCreated ? 201 : 200);
     }
 
-    public function destroy($id_usuario, $id_rol)
+    // DELETE /api/usuario-roles/{id_usuario}/{id_rol}
+    public function destroy(int $id_usuario, int $id_rol): JsonResponse
     {
-        UsuarioRol::where('id_usuario', $id_usuario)
+        $eliminadas = UsuarioRol::where('id_usuario', $id_usuario)
             ->where('id_rol', $id_rol)
             ->delete();
 
-        return redirect()->route('admin.usuario-roles.index')->with('success', 'Asignación eliminada.');
+        if (!$eliminadas) {
+            return response()->json(['mensaje' => 'Ese usuario no tiene asignado ese rol.'], 404);
+        }
+
+        return response()->json(['mensaje' => 'Asignación eliminada.']);
     }
 }

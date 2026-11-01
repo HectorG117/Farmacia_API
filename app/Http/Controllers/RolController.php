@@ -3,76 +3,83 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rol;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Roles de usuario (responde JSON para la API). Solo administradores nivel 3.
+ */
 class RolController extends Controller
 {
-    /**
-     * Muestra la lista de roles.
-     */
-    public function index()
+    // GET /api/roles
+    public function index(): JsonResponse
     {
-        $roles = Rol::all();
-        return view('admin.roles.index', compact('roles'));
+        return response()->json(['data' => Rol::all()]);
     }
 
-    /**
-     * Muestra el formulario para crear un nuevo rol.
-     */
-    public function create()
+    // GET /api/roles/{id}
+    public function show(int $id): JsonResponse
     {
-        return view('admin.roles.create');
+        $rol = Rol::find($id);
+
+        return $rol ? response()->json(['data' => $rol]) : $this->noEncontrado();
     }
 
-    /**
-     * Almacena un rol recién creado en la base de datos.
-     */
-    public function store(Request $request)
+    // POST /api/roles
+    public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'nombre'      => 'required|string|max:50',
-            'descripcion' => 'nullable|string|max:200',
+        $rol = Rol::create($this->validar($request));
+
+        return response()->json([
+            'mensaje' => 'Rol creado exitosamente.',
+            'data'    => $rol,
+        ], 201);
+    }
+
+    // PUT /api/roles/{id}
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $rol = Rol::find($id);
+
+        if (!$rol) {
+            return $this->noEncontrado();
+        }
+
+        $rol->update($this->validar($request));
+
+        return response()->json([
+            'mensaje' => 'Rol actualizado exitosamente.',
+            'data'    => $rol,
         ]);
-
-        Rol::create($request->only(['nombre', 'descripcion']));
-
-        return redirect()->route('admin.roles.index')->with('success', 'Rol creado exitosamente.');
     }
 
-    /**
-     * Muestra el formulario para editar un rol.
-     */
-    public function edit(string $id)
+    // DELETE /api/roles/{id}  (también quita el rol a los usuarios que lo tenían)
+    public function destroy(int $id): JsonResponse
     {
-        $rol = Rol::findOrFail($id);
-        return view('admin.roles.edit', compact('rol'));
-    }
+        $rol = Rol::find($id);
 
-    /**
-     * Actualiza el rol especificado.
-     */
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'nombre'      => 'required|string|max:50',
-            'descripcion' => 'nullable|string|max:200',
-        ]);
+        if (!$rol) {
+            return $this->noEncontrado();
+        }
 
-        $rol = Rol::findOrFail($id);
-        $rol->update($request->only(['nombre', 'descripcion']));
-
-        return redirect()->route('admin.roles.index')->with('success', 'Rol actualizado exitosamente.');
-    }
-
-    /**
-     * Elimina el rol especificado.
-     */
-    public function destroy(string $id)
-    {
-        $rol = Rol::findOrFail($id);
         $rol->usuarios()->detach();
         $rol->delete();
 
-        return redirect()->route('admin.roles.index')->with('success', 'Rol eliminado exitosamente.');
+        return response()->json(['mensaje' => 'Rol eliminado exitosamente.']);
+    }
+
+    // ------------------------------------------------------------------
+
+    private function validar(Request $request): array
+    {
+        return $request->validate([
+            'nombre'      => 'required|string|max:50',
+            'descripcion' => 'nullable|string|max:200',
+        ]);
+    }
+
+    private function noEncontrado(): JsonResponse
+    {
+        return response()->json(['mensaje' => 'El rol solicitado no existe.'], 404);
     }
 }

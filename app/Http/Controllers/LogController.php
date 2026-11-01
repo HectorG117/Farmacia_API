@@ -3,56 +3,67 @@
 namespace App\Http\Controllers;
 
 use App\Models\Log;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Bitácora (logs) del sistema (responde JSON para la API). Solo administradores nivel 3.
+ */
 class LogController extends Controller
 {
-    /**
-     * Muestra la lista de logs registrados.
-     */
-    public function index()
+    // GET /api/logs
+    public function index(): JsonResponse
     {
-        $logs = Log::all();
-        return view('admin.logs.index', compact('logs'));
+        return response()->json(['data' => Log::latest('fecha')->get()]);
     }
 
-    /**
-     * Muestra el formulario para registrar un log manualmente.
-     */
-    public function create()
+    // GET /api/logs/{id}
+    public function show(int $id): JsonResponse
     {
-        return view('admin.logs.create');
+        $log = Log::find($id);
+
+        return $log ? response()->json(['data' => $log]) : $this->noEncontrado();
     }
 
-    /**
-     * Almacena un nuevo registro de log.
-     */
-    public function store(Request $request)
+    // POST /api/logs  -> la IP y la fecha se toman de la petición
+    public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'accion' => 'required|string|max:255',
-            'modulo' => 'required|string|max:100',
+        $datos = $request->validate([
+            'id_usuario' => 'required|integer|exists:usuarios,id_usuario', // la columna no acepta NULL
+            'accion'     => 'required|string|max:255',
+            'modulo'     => 'required|string|max:100',
         ]);
 
-        Log::create([
-            'id_usuario' => $request->id_usuario ?? null,
-            'accion'     => $request->accion,
-            'modulo'     => $request->modulo,
+        $log = Log::create([
+            'id_usuario' => $datos['id_usuario'],
+            'accion'     => $datos['accion'],
+            'modulo'     => $datos['modulo'],
             'ip'         => $request->ip(),
             'fecha'      => now(),
         ]);
 
-        return redirect()->route('admin.logs.index')->with('success', 'Log registrado exitosamente.');
+        return response()->json([
+            'mensaje' => 'Log registrado exitosamente.',
+            'data'    => $log,
+        ], 201);
     }
 
-    /**
-     * Elimina el registro de log especificado.
-     */
-    public function destroy(string $id)
+    // DELETE /api/logs/{id}
+    public function destroy(int $id): JsonResponse
     {
-        $log = Log::findOrFail($id);
+        $log = Log::find($id);
+
+        if (!$log) {
+            return $this->noEncontrado();
+        }
+
         $log->delete();
 
-        return redirect()->route('admin.logs.index')->with('success', 'Log eliminado exitosamente.');
+        return response()->json(['mensaje' => 'Log eliminado exitosamente.']);
+    }
+
+    private function noEncontrado(): JsonResponse
+    {
+        return response()->json(['mensaje' => 'El log solicitado no existe.'], 404);
     }
 }

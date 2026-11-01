@@ -3,67 +3,93 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServicioMedico;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Servicios médicos (responde JSON para la API).
+ */
 class ServicioMedicoController extends Controller
 {
-    public function index()
+    // GET /api/servicios-medicos
+    public function index(): JsonResponse
     {
-        $servicios = ServicioMedico::all();
-        return view('admin.servicios-medicos.index', compact('servicios'));
+        return response()->json(['data' => ServicioMedico::all()]);
     }
 
-    public function create()
+    // GET /api/servicios-medicos/{id}
+    public function show(int $id): JsonResponse
     {
-        return view('admin.servicios-medicos.create');
+        $servicio = ServicioMedico::find($id);
+
+        return $servicio
+            ? response()->json(['data' => $servicio])
+            : $this->noEncontrado();
     }
 
-    public function store(Request $request)
+    // POST /api/servicios-medicos
+    public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'nombre'      => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:500',
-            'costo'       => 'required|numeric|min:0',
+        $servicio = ServicioMedico::create($this->validar($request));
+
+        return response()->json([
+            'mensaje' => 'Servicio médico creado exitosamente.',
+            'data'    => $servicio,
+        ], 201);
+    }
+
+    // PUT /api/servicios-medicos/{id}
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $servicio = ServicioMedico::find($id);
+
+        if (!$servicio) {
+            return $this->noEncontrado();
+        }
+
+        $servicio->update($this->validar($request));
+
+        return response()->json([
+            'mensaje' => 'Servicio médico actualizado exitosamente.',
+            'data'    => $servicio,
         ]);
-
-        ServicioMedico::create($request->only(['nombre', 'descripcion', 'costo']));
-
-        return redirect()->route('admin.servicios-medicos.index')->with('success', 'Servicio médico creado exitosamente.');
     }
 
-    public function edit(string $id)
+    // DELETE /api/servicios-medicos/{id}
+    public function destroy(int $id): JsonResponse
     {
-        $servicio = ServicioMedico::findOrFail($id);
-        return view('admin.servicios-medicos.edit', compact('servicio'));
-    }
+        $servicio = ServicioMedico::find($id);
 
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'nombre'      => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:500',
-            'costo'       => 'required|numeric|min:0',
-        ]);
-
-        $servicio = ServicioMedico::findOrFail($id);
-        $servicio->update($request->only(['nombre', 'descripcion', 'costo']));
-
-        return redirect()->route('admin.servicios-medicos.index')->with('success', 'Servicio médico actualizado exitosamente.');
-    }
-
-    public function destroy(string $id)
-    {
-        $servicio = ServicioMedico::findOrFail($id);
+        if (!$servicio) {
+            return $this->noEncontrado();
+        }
 
         // La llave foránea de "carrito_detalle" impide borrar un servicio que está en carritos
         if (DB::table('carrito_detalle')->where('id_servicio', $servicio->id_servicio)->exists()) {
-            return redirect()->route('admin.servicios-medicos.index')
-                ->with('error', "No se puede eliminar \"{$servicio->nombre}\" porque está en carritos de compra.");
+            return response()->json([
+                'mensaje' => "No se puede eliminar \"{$servicio->nombre}\" porque está en carritos de compra.",
+            ], 409);
         }
 
         $servicio->delete();
 
-        return redirect()->route('admin.servicios-medicos.index')->with('success', 'Servicio médico eliminado exitosamente.');
+        return response()->json(['mensaje' => 'Servicio médico eliminado exitosamente.']);
+    }
+
+    // ------------------------------------------------------------------
+
+    private function validar(Request $request): array
+    {
+        return $request->validate([
+            'nombre'      => 'required|string|max:100',
+            'descripcion' => 'nullable|string|max:500',
+            'costo'       => 'required|numeric|min:0',
+        ]);
+    }
+
+    private function noEncontrado(): JsonResponse
+    {
+        return response()->json(['mensaje' => 'El servicio médico solicitado no existe.'], 404);
     }
 }

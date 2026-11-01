@@ -3,46 +3,61 @@
 namespace App\Http\Controllers;
 
 use App\Models\SesionSocial;
-use App\Models\Usuario;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Sesiones sociales vinculadas a usuarios (responde JSON para la API).
+ */
 class SesionSocialController extends Controller
 {
-    public function index()
+    // GET /api/sesiones-sociales
+    public function index(): JsonResponse
     {
-        $sesiones = SesionSocial::with('usuario')->get();
-        return view('admin.sesiones_sociales.index', compact('sesiones'));
+        return response()->json(['data' => SesionSocial::with('usuario')->get()]);
     }
 
-    public function create()
+    // GET /api/sesiones-sociales/{id}
+    public function show(int $id): JsonResponse
     {
-        $usuarios = Usuario::all();
-        return view('admin.sesiones_sociales.create', compact('usuarios'));
+        $sesion = SesionSocial::with('usuario')->find($id);
+
+        return $sesion ? response()->json(['data' => $sesion]) : $this->noEncontrada();
     }
 
-    public function store(Request $request)
+    // POST /api/sesiones-sociales
+    public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'id_usuario' => 'required|exists:usuarios,id_usuario',
-            'proveedor' => 'required|string|max:50',
+        $datos = $request->validate([
+            'id_usuario'  => 'required|integer|exists:usuarios,id_usuario',
+            'proveedor'   => 'required|string|max:50',
             'provider_id' => 'required|string|max:200',
         ]);
 
-        SesionSocial::create([
-            'id_usuario' => $request->id_usuario,
-            'proveedor' => $request->proveedor,
-            'provider_id' => $request->provider_id,
-            'fecha_vinculacion' => now(),
-        ]);
+        $sesion = SesionSocial::create([...$datos, 'fecha_vinculacion' => now()]);
 
-        return redirect()->route('admin.sesiones-sociales.index')->with('success', 'Sesión social vinculada.');
+        return response()->json([
+            'mensaje' => 'Sesión social vinculada.',
+            'data'    => $sesion->load('usuario'),
+        ], 201);
     }
 
-    public function destroy($id)
+    // DELETE /api/sesiones-sociales/{id}
+    public function destroy(int $id): JsonResponse
     {
-        $sesion = SesionSocial::findOrFail($id);
+        $sesion = SesionSocial::find($id);
+
+        if (!$sesion) {
+            return $this->noEncontrada();
+        }
+
         $sesion->delete();
 
-        return redirect()->route('admin.sesiones-sociales.index')->with('success', 'Sesión social eliminada.');
+        return response()->json(['mensaje' => 'Sesión social eliminada.']);
+    }
+
+    private function noEncontrada(): JsonResponse
+    {
+        return response()->json(['mensaje' => 'La sesión social solicitada no existe.'], 404);
     }
 }

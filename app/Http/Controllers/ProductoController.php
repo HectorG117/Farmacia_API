@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Productos (responde JSON para la API).
+ *
+ * Públicas:  GET /api/productos, GET /api/productos/{id}
+ * Admin:     POST, PUT, DELETE (papelera), restaurar y borrado definitivo.
+ */
 class ProductoController extends Controller
 {
     /**
@@ -29,56 +36,32 @@ class ProductoController extends Controller
     // y nunca llega a pasarle esa petición a Laravel.
     private const CARPETA_IMAGENES = 'uploads/productos';
 
-    // Mostrar listado de productos activos
-    public function index()
+    // GET /api/productos  -> productos activos
+    public function index(): JsonResponse
     {
-        $productos = Producto::latest()->get();
-
-        return view('productos.index', compact('productos'));
+        return response()->json(['data' => Producto::latest()->get()]);
     }
 
-    // Mostrar el listado de productos eliminados mediante borrado lógico
-    public function papelera()
+    // GET /api/productos/papelera  -> productos eliminados mediante borrado lógico
+    public function papelera(): JsonResponse
     {
-        $productos = Producto::onlyTrashed()->latest('deleted_at')->get();
-
-        return view('productos.papelera', compact('productos'));
+        return response()->json(['data' => Producto::onlyTrashed()->latest('deleted_at')->get()]);
     }
 
-    // Mostrar el formulario de creación
-    public function create()
-    {
-        return view('productos.create');
-    }
-
-    // Mostrar toda la información de un único producto, sin permitir modificarla
-    public function show(int $id)
+    // GET /api/productos/{id}
+    public function show(int $id): JsonResponse
     {
         $producto = Producto::find($id);
 
         if (!$producto) {
-            return redirect()->route('productos.index')
-                ->with('error', 'El producto solicitado no existe o fue eliminado.');
+            return $this->noEncontrado('El producto solicitado no existe o fue eliminado.');
         }
 
-        return view('productos.show', compact('producto'));
+        return response()->json(['data' => $producto]);
     }
 
-    // Mostrar el formulario de edición con los datos existentes
-    public function edit(int $id)
-    {
-        $producto = Producto::find($id);
-
-        if (!$producto) {
-            return redirect()->route('productos.index')
-                ->with('error', 'El producto solicitado no existe.');
-        }
-
-        return view('productos.edit', compact('producto'));
-    }
-
-    // Guardar el nuevo producto con validaciones e imagen
-    public function store(Request $request)
+    // POST /api/productos  (multipart/form-data por la imagen)
+    public function store(Request $request): JsonResponse
     {
         $request->validate([
             'nombre'    => 'required|string|min:3|max:100',
@@ -97,18 +80,19 @@ class ProductoController extends Controller
 
         $this->saveImage($request, $producto);
 
-        return redirect()->route('productos.index')
-            ->with('exito', '¡Producto registrado correctamente!');
+        return response()->json([
+            'mensaje' => '¡Producto registrado correctamente!',
+            'data'    => $producto->fresh(),
+        ], 201);
     }
 
-    // Actualizar los datos del producto y reemplazar su imagen si se proporciona
-    public function update(Request $request, int $id)
+    // PUT /api/productos/{id}  (para enviar una imagen nueva: POST con el campo _method=PUT)
+    public function update(Request $request, int $id): JsonResponse
     {
         $producto = Producto::find($id);
 
         if (!$producto) {
-            return redirect()->route('productos.index')
-                ->with('error', 'El producto que intentas actualizar no existe.');
+            return $this->noEncontrado('El producto que intentas actualizar no existe.');
         }
 
         $request->validate([
@@ -126,57 +110,60 @@ class ProductoController extends Controller
             $this->saveImage($request, $producto);
         }
 
-        return redirect()->route('productos.index')
-            ->with('exito', '¡Producto actualizado correctamente!');
+        return response()->json([
+            'mensaje' => '¡Producto actualizado correctamente!',
+            'data'    => $producto->fresh(),
+        ]);
     }
 
-    // Borrado LÓGICO: conserva el registro en la base de datos y solo marca "deleted_at"
-    public function destroy(int $id)
+    // DELETE /api/productos/{id}  -> borrado LÓGICO (solo marca "deleted_at")
+    public function destroy(int $id): JsonResponse
     {
         $producto = Producto::find($id);
 
         if (!$producto) {
-            return redirect()->route('productos.index')
-                ->with('error', 'El producto que intentas eliminar no existe.');
+            return $this->noEncontrado('El producto que intentas eliminar no existe.');
         }
 
         $producto->delete();
 
-        return redirect()->route('productos.index')
-            ->with('exito', "El producto \"{$producto->nombre}\" se movió a la papelera. Puedes restaurarlo desde ahí.");
+        return response()->json([
+            'mensaje' => "El producto \"{$producto->nombre}\" se movió a la papelera. Puedes restaurarlo desde ahí.",
+        ]);
     }
 
-    // Restaurar un producto eliminado lógicamente para que vuelva a estar activo
-    public function restore(int $id)
+    // PUT /api/productos/{id}/restaurar
+    public function restore(int $id): JsonResponse
     {
         $producto = Producto::onlyTrashed()->find($id);
 
         if (!$producto) {
-            return redirect()->route('productos.papelera')
-                ->with('error', 'El producto no existe o ya se encuentra activo.');
+            return $this->noEncontrado('El producto no existe o ya se encuentra activo.');
         }
 
         $producto->restore();
 
-        return redirect()->route('productos.papelera')
-            ->with('exito', "El producto \"{$producto->nombre}\" fue restaurado y ya aparece en el catálogo.");
+        return response()->json([
+            'mensaje' => "El producto \"{$producto->nombre}\" fue restaurado y ya aparece en el catálogo.",
+            'data'    => $producto,
+        ]);
     }
 
-    // Borrado FÍSICO: elimina el registro de forma definitiva (solo disponible para productos ya eliminados lógicamente)
-    public function forceDestroy(int $id)
+    // DELETE /api/productos/{id}/definitivo  -> borrado FÍSICO (solo productos en la papelera)
+    public function forceDestroy(int $id): JsonResponse
     {
         $producto = Producto::onlyTrashed()->find($id);
 
         if (!$producto) {
-            return redirect()->route('productos.papelera')
-                ->with('error', 'Solo se pueden eliminar de forma definitiva productos que ya estén en la papelera.');
+            return $this->noEncontrado('Solo se pueden eliminar de forma definitiva productos que ya estén en la papelera.');
         }
 
         $dependencias = $this->buscarDependenciasActivas($producto);
 
         if (!empty($dependencias)) {
-            return redirect()->route('productos.papelera')
-                ->with('advertencia', "No se puede eliminar definitivamente \"{$producto->nombre}\" porque todavía está relacionado con: " . implode(', ', $dependencias) . '.');
+            return response()->json([
+                'mensaje' => "No se puede eliminar definitivamente \"{$producto->nombre}\" porque todavía está relacionado con: " . implode(', ', $dependencias) . '.',
+            ], 409);
         }
 
         $this->deleteImageFile($producto->imagen);
@@ -184,8 +171,16 @@ class ProductoController extends Controller
         $nombre = $producto->nombre;
         $producto->forceDelete();
 
-        return redirect()->route('productos.papelera')
-            ->with('exito', "El producto \"{$nombre}\" y su imagen fueron eliminados de forma definitiva.");
+        return response()->json([
+            'mensaje' => "El producto \"{$nombre}\" y su imagen fueron eliminados de forma definitiva.",
+        ]);
+    }
+
+    // ------------------------------------------------------------------
+
+    private function noEncontrado(string $mensaje): JsonResponse
+    {
+        return response()->json(['mensaje' => $mensaje], 404);
     }
 
     // Revisa, tabla por tabla, si el producto sigue siendo usado en alguna relación

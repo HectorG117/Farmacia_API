@@ -3,50 +3,92 @@
 namespace App\Http\Controllers;
 
 use App\Models\HistorialTransaccion;
-use App\Models\Usuario;
-use App\Models\Carrito;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Historial de transacciones (responde JSON para la API).
+ */
 class HistorialTransaccionController extends Controller
 {
-    public function index()
+    // GET /api/historial-transacciones
+    public function index(): JsonResponse
     {
-        $transacciones = HistorialTransaccion::with(['usuario', 'carrito'])->get();
-        return view('admin.historial_transacciones.index', compact('transacciones'));
+        $transacciones = HistorialTransaccion::with(['usuario', 'carrito'])
+            ->orderByDesc('id_transaccion')
+            ->get();
+
+        return response()->json(['data' => $transacciones]);
     }
 
-    public function create()
+    // GET /api/historial-transacciones/{id}
+    public function show(int $id): JsonResponse
     {
-        $usuarios = Usuario::all();
-        $carritos = Carrito::all();
-        return view('admin.historial_transacciones.create', compact('usuarios', 'carritos'));
+        $transaccion = HistorialTransaccion::with(['usuario', 'carrito'])->find($id);
+
+        return $transaccion ? response()->json(['data' => $transaccion]) : $this->noEncontrada();
     }
 
-    public function store(Request $request)
+    // POST /api/historial-transacciones  (si no se envía fecha se usa la actual)
+    public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'id_usuario' => 'required|exists:usuarios,id_usuario',
-            'id_carrito' => 'required|exists:carrito,id_carrito',
-            'total' => 'required|numeric|min:0',
-            'estado' => 'required|string|max:30',
+        $datos = $this->validar($request);
+
+        $transaccion = HistorialTransaccion::create([...$datos, 'fecha' => $datos['fecha'] ?? now()]);
+
+        return response()->json([
+            'mensaje' => 'Transacción registrada.',
+            'data'    => $transaccion->load(['usuario', 'carrito']),
+        ], 201);
+    }
+
+    // PUT /api/historial-transacciones/{id}
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $transaccion = HistorialTransaccion::find($id);
+
+        if (!$transaccion) {
+            return $this->noEncontrada();
+        }
+
+        $datos = $this->validar($request);
+        $transaccion->update($datos);
+
+        return response()->json([
+            'mensaje' => 'Transacción actualizada.',
+            'data'    => $transaccion->fresh(['usuario', 'carrito']),
         ]);
-
-        HistorialTransaccion::create([
-            'id_usuario' => $request->id_usuario,
-            'id_carrito' => $request->id_carrito,
-            'total' => $request->total,
-            'estado' => $request->estado,
-            'fecha' => now(),
-        ]);
-
-        return redirect()->route('admin.historial-transacciones.index')->with('success', 'Transacción registrada.');
     }
 
-    public function destroy($id)
+    // DELETE /api/historial-transacciones/{id}
+    public function destroy(int $id): JsonResponse
     {
-        $transaccion = HistorialTransaccion::findOrFail($id);
+        $transaccion = HistorialTransaccion::find($id);
+
+        if (!$transaccion) {
+            return $this->noEncontrada();
+        }
+
         $transaccion->delete();
 
-        return redirect()->route('admin.historial-transacciones.index')->with('success', 'Transacción eliminada.');
+        return response()->json(['mensaje' => 'Transacción eliminada.']);
+    }
+
+    // ------------------------------------------------------------------
+
+    private function validar(Request $request): array
+    {
+        return $request->validate([
+            'id_usuario' => 'required|integer|exists:usuarios,id_usuario',
+            'id_carrito' => 'required|integer|exists:carrito,id_carrito',
+            'total'      => 'required|numeric|min:0',
+            'estado'     => 'required|string|max:30',
+            'fecha'      => 'nullable|date',
+        ]);
+    }
+
+    private function noEncontrada(): JsonResponse
+    {
+        return response()->json(['mensaje' => 'La transacción solicitada no existe.'], 404);
     }
 }

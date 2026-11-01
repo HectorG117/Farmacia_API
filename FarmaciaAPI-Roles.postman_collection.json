@@ -7,7 +7,7 @@
   "item": [
     {
       "name": "Admin",
-      "description": "Login con nombre_usuario. El CRUD de médicos, citas, expedientes y recetas está en la colección \"Farmacia API\" (usa este mismo token).",
+      "description": "Login con nombre_usuario. Niveles: 1 consulta, 2 crea/edita, 3 elimina y administra roles y logs (403 si no te alcanza el nivel). Médicos, citas, expedientes y recetas están en la colección \"Farmacia API\" (usa este mismo token).",
       "auth": {
         "type": "bearer",
         "bearer": [
@@ -143,6 +143,1673 @@
                 "exec": [
                   "pm.collectionVariables.set('token_admin', '');"
                 ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Productos",
+          "item": [
+            {
+              "name": "Listar (público)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/productos",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "productos"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver (público)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/productos/{{producto_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "productos",
+                    "{{producto_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear (con imagen)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/productos",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "productos"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "nombre",
+                      "value": "Ibuprofeno 400 mg",
+                      "type": "text"
+                    },
+                    {
+                      "key": "precio",
+                      "value": "45.50",
+                      "type": "text"
+                    },
+                    {
+                      "key": "stock",
+                      "value": "30",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoria",
+                      "value": "Analgésicos",
+                      "type": "text"
+                    },
+                    {
+                      "key": "imagen",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                },
+                "description": "form-data: selecciona un archivo en el campo imagen (jpeg, png o webp, máx. 2 MB)."
+              }
+            },
+            {
+              "name": "Actualizar (JSON, sin imagen)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/productos/{{producto_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "productos",
+                    "{{producto_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"precio\": 49.9,\n  \"stock\": 25\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Actualizar con imagen",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/productos/{{producto_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "productos",
+                    "{{producto_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "_method",
+                      "value": "PUT",
+                      "type": "text"
+                    },
+                    {
+                      "key": "imagen",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                },
+                "description": "PHP no lee archivos en un PUT: se envía POST con _method=PUT."
+              }
+            },
+            {
+              "name": "Mover a papelera (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/productos/{{producto_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "productos",
+                    "{{producto_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Papelera (nivel 3)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/productos/papelera",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "productos",
+                    "papelera"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Restaurar (nivel 3)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/productos/{{producto_id}}/restaurar",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "productos",
+                    "{{producto_id}}",
+                    "restaurar"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Eliminar definitivo (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/productos/{{producto_id}}/definitivo",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "productos",
+                    "{{producto_id}}",
+                    "definitivo"
+                  ]
+                },
+                "description": "Solo productos que ya estén en la papelera. 409 si el producto está en recetas."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Especialidades",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/especialidades",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "especialidades"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/especialidades/{{especialidad_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "especialidades",
+                    "{{especialidad_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/especialidades",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "especialidades"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Pediatría\",\n  \"descripcion\": \"Atención médica de niños\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Actualizar",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/especialidades/{{especialidad_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "especialidades",
+                    "{{especialidad_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Pediatría\",\n  \"descripcion\": \"Atención médica de niños\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/especialidades/{{especialidad_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "especialidades",
+                    "{{especialidad_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Servicios médicos",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/servicios-medicos",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "servicios-medicos"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/servicios-medicos/{{servicio_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "servicios-medicos",
+                    "{{servicio_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/servicios-medicos",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "servicios-medicos"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Consulta general\",\n  \"descripcion\": \"Consulta de 30 minutos\",\n  \"costo\": 350\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Actualizar",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/servicios-medicos/{{servicio_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "servicios-medicos",
+                    "{{servicio_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Consulta general\",\n  \"descripcion\": \"Consulta de 30 minutos\",\n  \"costo\": 350\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/servicios-medicos/{{servicio_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "servicios-medicos",
+                    "{{servicio_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Usuario-roles",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/usuario-roles",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "usuario-roles"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Asignar rol",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/usuario-roles",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "usuario-roles"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_usuario\": {{paciente_id}},\n  \"id_rol\": {{rol_id}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Quitar rol (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/usuario-roles/{{paciente_id}}/{{rol_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "usuario-roles",
+                    "{{paciente_id}}",
+                    "{{rol_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sesiones sociales",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/sesiones-sociales",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "sesiones-sociales"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/sesiones-sociales/{{sesion_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "sesiones-sociales",
+                    "{{sesion_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/sesiones-sociales",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "sesiones-sociales"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_usuario\": {{paciente_id}},\n  \"proveedor\": \"google\",\n  \"provider_id\": \"1234567890\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/sesiones-sociales/{{sesion_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "sesiones-sociales",
+                    "{{sesion_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Historial de transacciones",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/historial-transacciones",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "historial-transacciones"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/historial-transacciones/{{transaccion_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "historial-transacciones",
+                    "{{transaccion_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/historial-transacciones",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "historial-transacciones"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_usuario\": {{paciente_id}},\n  \"id_carrito\": {{carrito_id}},\n  \"total\": 350,\n  \"estado\": \"Pagada\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Actualizar",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/historial-transacciones/{{transaccion_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "historial-transacciones",
+                    "{{transaccion_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_usuario\": {{paciente_id}},\n  \"id_carrito\": {{carrito_id}},\n  \"total\": 350,\n  \"estado\": \"Pagada\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/historial-transacciones/{{transaccion_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "historial-transacciones",
+                    "{{transaccion_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Usuarios",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/usuarios",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "usuarios"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/usuarios/{{paciente_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "usuarios",
+                    "{{paciente_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/usuarios",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "usuarios"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Luis\",\n  \"apellido\": \"Pérez\",\n  \"email\": \"luis@example.com\",\n  \"telefono\": \"5512345678\",\n  \"password\": \"secreto123\",\n  \"activo\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Actualizar",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/usuarios/{{paciente_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "usuarios",
+                    "{{paciente_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Luis\",\n  \"apellido\": \"Pérez\",\n  \"email\": \"luis@example.com\",\n  \"telefono\": \"5512345678\",\n  \"password\": \"secreto123\",\n  \"activo\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/usuarios/{{paciente_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "usuarios",
+                    "{{paciente_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Carritos",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carritos",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carritos"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carritos/{{carrito_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carritos",
+                    "{{carrito_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carritos",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carritos"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_usuario\": {{paciente_id}},\n  \"fecha\": \"2026-10-31 10:00:00\",\n  \"estado\": \"Activo\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Actualizar",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carritos/{{carrito_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carritos",
+                    "{{carrito_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_usuario\": {{paciente_id}},\n  \"fecha\": \"2026-10-31 10:00:00\",\n  \"estado\": \"Activo\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carritos/{{carrito_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carritos",
+                    "{{carrito_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Detalles de carrito",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carrito-detalles",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carrito-detalles"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carrito-detalles/{{carrito_detalle_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carrito-detalles",
+                    "{{carrito_detalle_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carrito-detalles",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carrito-detalles"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_carrito\": {{carrito_id}},\n  \"id_servicio\": {{servicio_id}},\n  \"cantidad\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Actualizar",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carrito-detalles/{{carrito_detalle_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carrito-detalles",
+                    "{{carrito_detalle_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_carrito\": {{carrito_id}},\n  \"id_servicio\": {{servicio_id}},\n  \"cantidad\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/carrito-detalles/{{carrito_detalle_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "carrito-detalles",
+                    "{{carrito_detalle_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cuentas de acceso (users)",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/users",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/users/{{user_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "{{user_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/users",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Soporte\",\n  \"email\": \"soporte@example.com\",\n  \"password\": \"secreto123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Actualizar",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/users/{{user_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "{{user_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Soporte\",\n  \"email\": \"soporte@example.com\",\n  \"password\": \"secreto123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar (nivel 3)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/users/{{user_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    "{{user_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Roles (nivel 3)",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/roles",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "roles"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/roles/{{rol_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "roles",
+                    "{{rol_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/roles",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "roles"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Cliente\",\n  \"descripcion\": \"Paciente de la farmacia\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Actualizar",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/roles/{{rol_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "roles",
+                    "{{rol_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Cliente\",\n  \"descripcion\": \"Paciente de la farmacia\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/roles/{{rol_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "roles",
+                    "{{rol_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logs (nivel 3)",
+          "item": [
+            {
+              "name": "Listar",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/logs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "logs"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/logs/{{log_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "logs",
+                    "{{log_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Crear",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/logs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "logs"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id_usuario\": {{paciente_id}},\n  \"accion\": \"Inicio de sesión\",\n  \"modulo\": \"Autenticación\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Eliminar",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/logs/{{log_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "logs",
+                    "{{log_id}}"
+                  ]
+                }
               }
             }
           ]
@@ -1036,6 +2703,42 @@
     },
     {
       "key": "detalle_id",
+      "value": "1"
+    },
+    {
+      "key": "especialidad_id",
+      "value": "1"
+    },
+    {
+      "key": "servicio_id",
+      "value": "1"
+    },
+    {
+      "key": "rol_id",
+      "value": "1"
+    },
+    {
+      "key": "sesion_id",
+      "value": "1"
+    },
+    {
+      "key": "transaccion_id",
+      "value": "1"
+    },
+    {
+      "key": "carrito_id",
+      "value": "1"
+    },
+    {
+      "key": "carrito_detalle_id",
+      "value": "1"
+    },
+    {
+      "key": "user_id",
+      "value": "1"
+    },
+    {
+      "key": "log_id",
       "value": "1"
     }
   ]
