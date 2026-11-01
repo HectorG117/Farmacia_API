@@ -50,6 +50,11 @@ return [
             'driver' => 'session',
             'provider' => 'doctores',
         ],
+        // Pacientes / clientes: misma tabla "usuarios" que los doctores, sesión independiente
+        'cliente' => [
+            'driver' => 'session',
+            'provider' => 'clientes',
+        ],
     ],
 
     /*
@@ -79,6 +84,10 @@ return [
             'model' => App\Models\Administrador::class,
         ],
         'doctores' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Usuario::class,
+        ],
+        'clientes' => [
             'driver' => 'eloquent',
             'model' => App\Models\Usuario::class,
         ],

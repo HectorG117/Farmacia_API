@@ -13,7 +13,9 @@
                 <h1 class="text-3xl font-bold tracking-tight text-slate-900">Servicios Médicos</h1>
                 <p class="mt-2 max-w-2xl text-slate-500">Administra el catálogo de servicios médicos ofertados.</p>
             </div>
-            <a href="{{ route('admin.servicios-medicos.create') }}" class="inline-flex items-center justify-center rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-800">+ Nuevo Servicio</a>
+            @can('crear-editar-registros')
+                <a href="{{ route('admin.servicios-medicos.create') }}" class="inline-flex items-center justify-center rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-800">+ Nuevo Servicio</a>
+            @endcan
         </div>
 
         <section class="admin-panel rounded-xl p-6">
@@ -36,11 +38,18 @@
                                 <td>{{ $servicio->descripcion ?? 'Sin descripción' }}</td>
                                 <td class="font-semibold text-teal-800">${{ number_format($servicio->costo, 2) }}</td>
                                 <td>
-                                    <form action="{{ route('admin.servicios-medicos.destroy', $servicio->id_servicio ?? $servicio->id) }}" method="POST" onsubmit="return confirm('¿Eliminar este servicio?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-sm font-semibold text-red-600 hover:text-red-800">Eliminar</button>
-                                    </form>
+                                    <div class="flex items-center gap-3">
+                                        @can('crear-editar-registros')
+                                            <a href="{{ route('admin.servicios-medicos.edit', $servicio->id_servicio) }}" class="text-sm font-semibold text-teal-700 hover:text-teal-900">Editar</a>
+                                        @endcan
+                                        @can('eliminar-registros')
+                                        <form action="{{ route('admin.servicios-medicos.destroy', $servicio->id_servicio ?? $servicio->id) }}" method="POST" onsubmit="return confirm('¿Eliminar este servicio?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-sm font-semibold text-red-600 hover:text-red-800">Eliminar</button>
+                                        </form>
+                                        @endcan
+                                    </div>
                                 </td>
                             </tr>
                         @empty

@@ -42,6 +42,7 @@
         <p class="mt-6 border-t border-slate-100 pt-5 text-center text-sm text-slate-500">
             ¿Buscas el acceso administrativo?
             <a href="{{ route('login') }}" class="font-semibold text-teal-700 hover:text-teal-900">Iniciar sesión como administrador</a>
+            <br>¿Eres paciente? <a href="{{ route('cliente.login') }}" class="font-semibold text-teal-700 hover:text-teal-900">Portal del paciente</a>
         </p>
     </main>
 </body>

@@ -13,17 +13,26 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // API: restringe rutas a un rol (admin, medico o paciente) -> ->middleware('rol:medico')
+        $middleware->alias([
+            'rol' => \App\Http\Middleware\VerificarRol::class,
+        ]);
+
         // Antes: App\Http\Middleware\Authenticate (Laravel 10)
-        // Invitados que intentan entrar al portal médico van a su login; el resto al login de administración.
-        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('doctor', 'doctor/*')
-            ? route('doctor.login')
-            : route('login'));
+        // Invitados que intentan entrar al portal médico o al del paciente van a su login; el resto al de administración.
+        $middleware->redirectGuestsTo(fn (Request $request) => match (true) {
+            $request->is('doctor', 'doctor/*') => route('doctor.login'),
+            $request->is('cliente', 'cliente/*') => route('cliente.login'),
+            default => route('login'),
+        });
 
         // Antes: App\Http\Middleware\RedirectIfAuthenticated (Laravel 10)
         // Usuarios ya autenticados que visitan un login se envían a su panel.
-        $middleware->redirectUsersTo(fn (Request $request) => $request->is('doctor', 'doctor/*')
-            ? route('doctor.dashboard')
-            : route('admin.dashboard'));
+        $middleware->redirectUsersTo(fn (Request $request) => match (true) {
+            $request->is('doctor', 'doctor/*') => route('doctor.dashboard'),
+            $request->is('cliente', 'cliente/*') => route('cliente.dashboard'),
+            default => route('admin.dashboard'),
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Las rutas /api/* siempre responden JSON (errores 401, 403, 404, 422...),

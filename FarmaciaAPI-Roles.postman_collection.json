@@ -1,0 +1,1042 @@
+{
+  "info": {
+    "name": "Farmacia API - Roles",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Un controlador y un token por rol (Admin, Médico, Paciente). 1) Ejecuta el Login del rol (guarda su token solo). 2) Usa las demás peticiones de esa carpeta. El token de un rol no funciona en las rutas de otro (403). Ajusta correos, contraseñas e IDs en la pestaña Variables."
+  },
+  "item": [
+    {
+      "name": "Admin",
+      "description": "Login con nombre_usuario. El CRUD de médicos, citas, expedientes y recetas está en la colección \"Farmacia API\" (usa este mismo token).",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token_admin}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_usuario\": \"{{admin_usuario}}\",\n  \"password\": \"{{admin_password}}\",\n  \"dispositivo\": \"Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('token_admin', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/perfil",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "perfil"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('token_admin', '');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Médico",
+      "description": "Login con email de una cuenta que tenga perfil médico. Solo ve sus citas, sus expedientes y sus recetas.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token_medico}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{medico_email}}\",\n  \"password\": \"{{medico_password}}\",\n  \"dispositivo\": \"Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('token_medico', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/perfil",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "perfil"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mis citas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/citas?estado=&fecha=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "citas"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": ""
+                },
+                {
+                  "key": "fecha",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver cita",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/citas/{{cita_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "citas",
+                "{{cita_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cambiar estado de cita",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/citas/{{cita_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "citas",
+                "{{cita_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"Confirmada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ver expediente de la cita",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/citas/{{cita_id}}/expediente",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "citas",
+                "{{cita_id}}",
+                "expediente"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Guardar expediente (crear o editar)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/citas/{{cita_id}}/expediente",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "citas",
+                "{{cita_id}}",
+                "expediente"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"diagnostico\": \"Faringitis aguda\",\n  \"tratamiento\": \"Paracetamol 500 mg cada 8 horas por 5 días\",\n  \"observaciones\": \"Revisión en una semana\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Mis pacientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/pacientes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "pacientes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mis recetas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/recetas?estado=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "recetas"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver receta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "recetas",
+                "{{receta_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Emitir receta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/recetas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "recetas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paciente_id\": {{paciente_id}},\n  \"fecha_emision\": \"2026-10-30\",\n  \"diagnostico\": \"Faringitis aguda\",\n  \"indicaciones_generales\": \"Tomar abundantes líquidos\",\n  \"estado\": \"Vigente\",\n  \"productos\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 días\",\n      \"instrucciones\": \"Después de los alimentos\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "El médico se toma del token: no se envía medico_id. Solo a pacientes con citas con el médico."
+          }
+        },
+        {
+          "name": "Actualizar receta",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "recetas",
+                "{{receta_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paciente_id\": {{paciente_id}},\n  \"fecha_emision\": \"2026-10-30\",\n  \"diagnostico\": \"Faringitis aguda\",\n  \"indicaciones_generales\": \"Tomar abundantes líquidos\",\n  \"estado\": \"Vigente\",\n  \"productos\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 días\",\n      \"instrucciones\": \"Después de los alimentos\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Cancelar receta (no hay DELETE)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "recetas",
+                "{{receta_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paciente_id\": {{paciente_id}},\n  \"fecha_emision\": \"2026-10-30\",\n  \"diagnostico\": \"Faringitis aguda\",\n  \"indicaciones_generales\": \"Tomar abundantes líquidos\",\n  \"estado\": \"Cancelada\",\n  \"productos\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 2,\n      \"dosis\": \"1 tableta de 500 mg\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracion\": \"Durante 5 días\",\n      \"instrucciones\": \"Después de los alimentos\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medico/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medico",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('token_medico', '');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Paciente",
+      "description": "Login con email de una cuenta sin perfil médico. Solo ve su propia información; en sus recetas vigentes elige qué comprar.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token_paciente}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Registro",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/registro",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "registro"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ana\",\n  \"apellido\": \"López\",\n  \"email\": \"ana@example.com\",\n  \"telefono\": \"5512345678\",\n  \"password\": \"secreto123\",\n  \"password_confirmation\": \"secreto123\",\n  \"dispositivo\": \"Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('token_paciente', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{paciente_email}}\",\n  \"password\": \"{{paciente_password}}\",\n  \"dispositivo\": \"Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('token_paciente', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/perfil",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "perfil"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Resumen",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/resumen",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "resumen"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mis citas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/citas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "citas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver cita",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/citas/{{cita_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "citas",
+                "{{cita_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mis expedientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/expedientes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "expedientes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver expediente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/expedientes/{{expediente_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "expedientes",
+                "{{expediente_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mis recetas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/recetas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "recetas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver receta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/recetas/{{receta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "recetas",
+                "{{receta_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Elegir qué comprar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/recetas/{{receta_id}}/compra",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "recetas",
+                "{{receta_id}}",
+                "compra"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"detalles\": {\n    \"{{detalle_id}}\": {\n      \"comprar\": true,\n      \"cantidad_compra\": 1\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Llaves = id_detalle de la receta. Los productos que no se envíen quedan como \"no comprar\". No puede comprar más de lo recetado ni de lo que hay en existencia."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/paciente/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "paciente",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('token_paciente', '');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api"
+    },
+    {
+      "key": "token_admin",
+      "value": ""
+    },
+    {
+      "key": "token_medico",
+      "value": ""
+    },
+    {
+      "key": "token_paciente",
+      "value": ""
+    },
+    {
+      "key": "admin_usuario",
+      "value": "admin"
+    },
+    {
+      "key": "admin_password",
+      "value": "password"
+    },
+    {
+      "key": "medico_email",
+      "value": "medico@example.com"
+    },
+    {
+      "key": "medico_password",
+      "value": "password"
+    },
+    {
+      "key": "paciente_email",
+      "value": "paciente@example.com"
+    },
+    {
+      "key": "paciente_password",
+      "value": "password"
+    },
+    {
+      "key": "paciente_id",
+      "value": "1"
+    },
+    {
+      "key": "producto_id",
+      "value": "1"
+    },
+    {
+      "key": "cita_id",
+      "value": "1"
+    },
+    {
+      "key": "expediente_id",
+      "value": "1"
+    },
+    {
+      "key": "receta_id",
+      "value": "1"
+    },
+    {
+      "key": "detalle_id",
+      "value": "1"
+    }
+  ]
+}

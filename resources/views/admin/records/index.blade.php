@@ -8,14 +8,13 @@
                 <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900">{{ $definition['title'] }}</h1>
                 <p class="mt-2 text-slate-500">Registros almacenados en el sistema.</p>
             </div>
+            @can('crear-editar-registros')
             <a href="{{ route('admin.' . $module . '.create') }}" class="inline-flex items-center justify-center rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-800">+ Nuevo registro</a>
+            @endcan
         </div>
 
         @if (session('success'))
             <div class="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{{ session('success') }}</div>
-        @endif
-        @if (session('error'))
-            <div class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ session('error') }}</div>
         @endif
 
         <section class="admin-panel overflow-hidden rounded-xl">
@@ -30,12 +29,16 @@
                                 @endforeach
                                 <td>
                                     <div class="flex gap-2">
+                                        @can('crear-editar-registros')
                                         <a href="{{ route('admin.' . $module . '.edit', $record->getKey()) }}" class="rounded-md border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:border-teal-400 hover:text-teal-700">Editar</a>
+                                        @endcan
+                                        @can('eliminar-registros')
                                         <form method="POST" action="{{ route('admin.' . $module . '.destroy', $record->getKey()) }}" onsubmit="return confirm('¿Eliminar este registro?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="rounded-md border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:border-red-400 hover:text-red-700">Eliminar</button>
                                         </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

@@ -59,6 +59,23 @@ class Receta extends Model
         );
     }
 
+    // Solo las recetas vigentes pueden recibir cambios del paciente
+    public function esEditablePorPaciente(): bool
+    {
+        return $this->estado === 'Vigente';
+    }
+
+    // Total de los productos que el paciente eligió comprar
+    public function getTotalCompraAttribute(): float
+    {
+        return (float) $this->detalles->sum(fn (RecetaDetalle $detalle) => $detalle->subtotal_compra);
+    }
+
+    public function getProductosSeleccionadosAttribute(): int
+    {
+        return $this->detalles->where('comprar', true)->count();
+    }
+
     // Costo estimado de surtir toda la receta
     public function getTotalEstimadoAttribute(): float
     {

@@ -1,6 +1,7 @@
 {{--
     Formulario compartido para crear y editar recetas.
-    Variables: $medicos, $pacientes, $productos, $receta (opcional)
+    Variables: $pacientes, $productos, $receta (opcional)
+               $medicos (panel admin) o $medicoFijo (portal médico)
 --}}
 @php
     $receta = $receta ?? null;
@@ -33,18 +34,28 @@
     </div>
 
     <div class="grid gap-5 md:grid-cols-2">
-        <label>
-            <span class="mb-2 block text-sm font-semibold text-slate-700">Médico que emite la receta</span>
-            <select class="admin-field" name="medico_id" required>
-                <option value="">-- Selecciona un médico --</option>
-                @foreach ($medicos as $medico)
-                    <option value="{{ $medico->id_medico }}" @selected((string) old('medico_id', $receta?->medico_id ?? request('medico_id')) === (string) $medico->id_medico)>
-                        {{ $medico->usuario?->nombre_completo ?? 'Médico #' . $medico->id_medico }}
-                        — {{ $medico->especialidad->nombre ?? 'Sin especialidad' }} (Céd. {{ $medico->cedula }})
-                    </option>
-                @endforeach
-            </select>
-        </label>
+        @if (isset($medicoFijo))
+            {{-- Portal médico: la receta siempre la emite el médico que inició sesión --}}
+            <div>
+                <span class="mb-2 block text-sm font-semibold text-slate-700">Médico que emite la receta</span>
+                <div class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700">
+                    {{ $medicoFijo->nombre_completo }} — {{ $medicoFijo->especialidad->nombre ?? 'Sin especialidad' }} (Céd. {{ $medicoFijo->cedula }})
+                </div>
+            </div>
+        @else
+            <label>
+                <span class="mb-2 block text-sm font-semibold text-slate-700">Médico que emite la receta</span>
+                <select class="admin-field" name="medico_id" required>
+                    <option value="">-- Selecciona un médico --</option>
+                    @foreach ($medicos as $medico)
+                        <option value="{{ $medico->id_medico }}" @selected((string) old('medico_id', $receta?->medico_id ?? request('medico_id')) === (string) $medico->id_medico)>
+                            {{ $medico->usuario?->nombre_completo ?? 'Médico #' . $medico->id_medico }}
+                            — {{ $medico->especialidad->nombre ?? 'Sin especialidad' }} (Céd. {{ $medico->cedula }})
+                        </option>
+                    @endforeach
+                </select>
+            </label>
+        @endif
 
         <label>
             <span class="mb-2 block text-sm font-semibold text-slate-700">Paciente</span>
@@ -74,7 +85,7 @@
 
         <label class="md:col-span-2">
             <span class="mb-2 block text-sm font-semibold text-slate-700">Diagnóstico</span>
-            <input class="admin-field" type="text" name="diagnostico" maxlength="255" value="{{ old('diagnostico', $receta?->diagnostico ?? request('diagnostico')) }}" placeholder="Ej. Infección de vías respiratorias">
+            <input class="admin-field" type="text" name="diagnostico" maxlength="255" value="{{ old('diagnostico', $receta?->diagnostico ?? ($diagnosticoSugerido ?? request('diagnostico'))) }}" placeholder="Ej. Infección de vías respiratorias">
         </label>
 
         <label class="md:col-span-2">

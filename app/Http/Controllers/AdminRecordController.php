@@ -90,6 +90,12 @@ class AdminRecordController extends Controller
         $definition = $this->definition($module);
         $record = $definition['model']::findOrFail($id);
 
+        // Un usuario con perfil de médico se administra desde el módulo de Médicos
+        if ($record instanceof Usuario && $record->medico()->exists()) {
+            return redirect()->route("admin.{$module}.index")
+                ->with('error', 'Este usuario tiene perfil de médico. Elimina primero su perfil desde el módulo de Médicos.');
+        }
+
         if ($record instanceof Carrito && $record->transacciones()->exists()) {
             return redirect()->route("admin.{$module}.index")
                 ->with('error', 'No se puede eliminar este carrito porque tiene transacciones asociadas.');

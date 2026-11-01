@@ -55,6 +55,24 @@
                     @endforeach
                 @endauth
                 @guest('admin')
+                    @auth('cliente')
+                        <a href="{{ route('cliente.dashboard') }}" class="admin-nav-link flex shrink-0 items-center gap-3 rounded-lg px-3 py-2.5 text-sm">
+                            <span class="w-5 text-center">♥</span> Mi portal de paciente
+                        </a>
+                    @else
+                        <a href="{{ route('cliente.login') }}" class="admin-nav-link flex shrink-0 items-center gap-3 rounded-lg px-3 py-2.5 text-sm">
+                            <span class="w-5 text-center">♥</span> Portal del paciente
+                        </a>
+                    @endauth
+                    @auth('doctor')
+                        <a href="{{ route('doctor.dashboard') }}" class="admin-nav-link flex shrink-0 items-center gap-3 rounded-lg px-3 py-2.5 text-sm">
+                            <span class="w-5 text-center">＋</span> Mi portal médico
+                        </a>
+                    @else
+                        <a href="{{ route('doctor.login') }}" class="admin-nav-link flex shrink-0 items-center gap-3 rounded-lg px-3 py-2.5 text-sm">
+                            <span class="w-5 text-center">＋</span> Portal médico
+                        </a>
+                    @endauth
                     <a href="{{ route('login') }}" class="admin-nav-link flex shrink-0 items-center gap-3 rounded-lg px-3 py-2.5 text-sm">
                         <span class="w-5 text-center">◎</span> Acceso de administrador
                     </a>

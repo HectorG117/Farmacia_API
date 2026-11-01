@@ -49,6 +49,9 @@
                             @else
                                 <span class="text-xs text-slate-400">Cita cancelada, sin expediente</span>
                             @endif
+                            @if ($cita->estado !== 'Cancelada')
+                                <a href="{{ route('doctor.recetas.create', ['cita' => $cita->id_cita]) }}" class="text-xs font-semibold text-orange-600 hover:underline">℞ Crear receta</a>
+                            @endif
                         </div>
                     </td>
                 </tr>

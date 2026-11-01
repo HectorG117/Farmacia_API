@@ -30,22 +30,13 @@ class RolController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre'      => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:500',
+            'nombre'      => 'required|string|max:50',
+            'descripcion' => 'nullable|string|max:200',
         ]);
 
         Rol::create($request->only(['nombre', 'descripcion']));
 
         return redirect()->route('admin.roles.index')->with('success', 'Rol creado exitosamente.');
-    }
-
-    /**
-     * Muestra un rol específico.
-     */
-    public function show(string $id)
-    {
-        $rol = Rol::findOrFail($id);
-        return view('admin.roles.show', compact('rol'));
     }
 
     /**
@@ -63,8 +54,8 @@ class RolController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'nombre'      => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:500',
+            'nombre'      => 'required|string|max:50',
+            'descripcion' => 'nullable|string|max:200',
         ]);
 
         $rol = Rol::findOrFail($id);
@@ -79,6 +70,7 @@ class RolController extends Controller
     public function destroy(string $id)
     {
         $rol = Rol::findOrFail($id);
+        $rol->usuarios()->detach();
         $rol->delete();
 
         return redirect()->route('admin.roles.index')->with('success', 'Rol eliminado exitosamente.');

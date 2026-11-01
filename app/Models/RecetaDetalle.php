@@ -21,6 +21,13 @@ class RecetaDetalle extends Model
         'frecuencia',
         'duracion',
         'instrucciones',
+        'comprar',
+        'cantidad_compra',
+    ];
+
+    protected $casts = [
+        'comprar'         => 'boolean',
+        'cantidad_compra' => 'integer',
     ];
 
     public function receta(): BelongsTo
@@ -40,5 +47,22 @@ class RecetaDetalle extends Model
             'producto_id',
             'id'
         )->withTrashed();
+    }
+
+    // Máximo que el paciente puede comprar: lo recetado, limitado por la existencia
+    public function getMaximoCompraAttribute(): int
+    {
+        $producto = $this->producto;
+
+        if (!$producto || $producto->trashed()) {
+            return 0;
+        }
+
+        return max(0, min((int) $this->cantidad, (int) $producto->stock));
+    }
+
+    public function getSubtotalCompraAttribute(): float
+    {
+        return $this->comprar ? $this->cantidad_compra * (float) ($this->producto->precio ?? 0) : 0.0;
     }
 }

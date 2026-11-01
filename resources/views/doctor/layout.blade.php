@@ -13,6 +13,10 @@
                 <a href="{{ route('doctor.dashboard') }}" class="text-lg font-bold tracking-wide text-slate-900">FARMACIA <span class="text-teal-700">VITAL</span></a>
                 <p class="mt-1 text-xs text-slate-500">Portal clínico · acceso limitado a tus pacientes</p>
             </div>
+            <nav class="flex items-center gap-1 text-sm font-semibold">
+                <a href="{{ route('doctor.dashboard') }}" class="rounded-lg px-3 py-2 {{ request()->routeIs('doctor.dashboard', 'doctor.expedientes.*') ? 'bg-teal-50 text-teal-800' : 'text-slate-600 hover:text-teal-700' }}">Mis citas</a>
+                <a href="{{ route('doctor.recetas.index') }}" class="rounded-lg px-3 py-2 {{ request()->routeIs('doctor.recetas.*') ? 'bg-teal-50 text-teal-800' : 'text-slate-600 hover:text-teal-700' }}">Mis recetas</a>
+            </nav>
             <div class="flex items-center gap-4">
                 <span class="hidden text-sm font-semibold text-slate-700 sm:block">{{ auth('doctor')->user()->nombre }} {{ auth('doctor')->user()->apellido }}</span>
                 <form action="{{ route('doctor.logout') }}" method="POST">
