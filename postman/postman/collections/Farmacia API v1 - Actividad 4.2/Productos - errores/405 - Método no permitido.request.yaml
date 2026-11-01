@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{base_url}}/productos"
+method: DELETE
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 405", () => pm.response.to.have.status(405));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+    language: text/javascript
+order: 8000

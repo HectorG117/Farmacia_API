@@ -1,0 +1,1652 @@
+{
+  "info": {
+    "_postman_id": "b051a47e-d1cb-443b-b78d-9079db33047d",
+    "name": "Farmacia API v1 - Actividad 4.2",
+    "description": "Endpoints públicos /api/v1 (sin autenticación). Todas las respuestas: { success, message, data, errors }.\nCambia base_url si usas XAMPP (por ejemplo http://localhost/Farmacia%20API/public/api/v1).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Listar productos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar productos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos?buscar=para&categoria=Medicamentos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "buscar",
+                  "value": "para"
+                },
+                {
+                  "key": "categoria",
+                  "value": "Medicamentos"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear producto (JSON, sin imagen)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"producto_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Paracetamol 500 mg\",\n  \"precio\": 45.5,\n  \"stock\": 120,\n  \"categoria\": \"Medicamentos\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear producto con imagen (form-data)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"producto_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nombre",
+                  "value": "Ibuprofeno 400 mg",
+                  "type": "text"
+                },
+                {
+                  "key": "precio",
+                  "value": "62.90",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "80",
+                  "type": "text"
+                },
+                {
+                  "key": "categoria",
+                  "value": "Medicamentos",
+                  "type": "text"
+                },
+                {
+                  "key": "imagen",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "description": "Selecciona un archivo JPG, PNG o WEBP (máx. 2 MB) en el campo imagen."
+          }
+        },
+        {
+          "name": "Ver producto (con imagen_url)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/{{producto_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "{{producto_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reemplazar producto (PUT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/{{producto_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "{{producto_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ibuprofeno 600 mg\",\n  \"precio\": 75,\n  \"stock\": 60,\n  \"categoria\": \"Medicamentos\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcialmente (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/{{producto_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "{{producto_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"precio\": 69.9\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar con imagen (POST + _method=PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/{{producto_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "{{producto_id}}"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "55",
+                  "type": "text"
+                },
+                {
+                  "key": "imagen",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "description": "PHP no lee archivos en PUT/PATCH reales; por eso se envía POST con _method."
+          }
+        },
+        {
+          "name": "Asociar o sustituir imagen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/{{producto_id}}/imagen",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "{{producto_id}}",
+                "imagen"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "imagen",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "description": "Si ya tenía imagen, el archivo anterior se borra (si ningún otro producto lo usa)."
+          }
+        },
+        {
+          "name": "Retirar imagen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/{{producto_id}}/imagen",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "{{producto_id}}",
+                "imagen"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/{{producto_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "{{producto_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos - errores",
+      "item": [
+        {
+          "name": "422 - Crear sin datos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "422 - Datos incompatibles (precio texto, stock negativo)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"AB\",\n  \"precio\": \"gratis\",\n  \"stock\": -5,\n  \"categoria\": \"Medicamentos\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "422 - Archivo que no es imagen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/1/imagen",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "1",
+                "imagen"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "imagen",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "description": "Selecciona un PDF o TXT para ver el error de validación."
+          }
+        },
+        {
+          "name": "404 - Producto inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/999999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "999999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 - Identificador inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/abc",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "abc"
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 - JSON mal formado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre\": \"Aspirina\", \"precio\": }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "400 - PATCH sin campos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"color\": \"rojo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "405 - Método no permitido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 405\", () => pm.response.to.have.status(405));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "415 - Content-Type no admitido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 415\", () => pm.response.to.have.status(415));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "text/plain"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "nombre=Aspirina",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "415 - Imagen enviada como JSON",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 415\", () => pm.response.to.have.status(415));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/productos/1/imagen",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "productos",
+                "1",
+                "imagen"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"imagen\": \"foto.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "404 - Endpoint inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/no-existe",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "no-existe"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Especialidades",
+      "item": [
+        {
+          "name": "Listar especialidades",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear especialidad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"especialidad_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Dermatología\",\n  \"descripcion\": \"Diagnóstico y tratamiento de enfermedades de la piel.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ver especialidad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades/{{especialidad_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades",
+                "{{especialidad_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Médicos de la especialidad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades/{{especialidad_id}}/medicos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades",
+                "{{especialidad_id}}",
+                "medicos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reemplazar especialidad (PUT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades/{{especialidad_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades",
+                "{{especialidad_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Dermatología Clínica\",\n  \"descripcion\": \"Atención de padecimientos de piel, pelo y uñas.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcialmente (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades/{{especialidad_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades",
+                "{{especialidad_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Piel, pelo y uñas.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "422 - Nombre duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Dermatología Clínica\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "404 - Especialidad inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades/999999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades",
+                "999999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "409 - Eliminar especialidad con médicos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades",
+                "1"
+              ]
+            },
+            "description": "Usa el id de una especialidad que tenga médicos asignados."
+          }
+        },
+        {
+          "name": "Eliminar especialidad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/especialidades/{{especialidad_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "especialidades",
+                "{{especialidad_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Servicios médicos",
+      "item": [
+        {
+          "name": "Listar servicios",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/servicios-medicos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "servicios-medicos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar solo activos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/servicios-medicos?activo=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "servicios-medicos"
+              ],
+              "query": [
+                {
+                  "key": "activo",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear servicio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"servicio_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/servicios-medicos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "servicios-medicos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Toma de presión arterial\",\n  \"descripcion\": \"Medición con baumanómetro digital.\",\n  \"costo\": 35,\n  \"activo\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ver servicio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/servicios-medicos/{{servicio_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "servicios-medicos",
+                "{{servicio_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reemplazar servicio (PUT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/servicios-medicos/{{servicio_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "servicios-medicos",
+                "{{servicio_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Toma de presión arterial\",\n  \"descripcion\": \"Medición y registro.\",\n  \"costo\": 40,\n  \"activo\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Desactivar (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/servicios-medicos/{{servicio_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "servicios-medicos",
+                "{{servicio_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"activo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "422 - Costo negativo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/servicios-medicos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "servicios-medicos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Consulta general\",\n  \"costo\": -10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar servicio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/servicios-medicos/{{servicio_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "servicios-medicos",
+                "{{servicio_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1"
+    },
+    {
+      "key": "producto_id",
+      "value": "1"
+    },
+    {
+      "key": "especialidad_id",
+      "value": "1"
+    },
+    {
+      "key": "servicio_id",
+      "value": "1"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminRecordController;
+use App\Http\Controllers\Api\V1;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\EspecialidadController;
 use App\Http\Controllers\ExpedienteMedicoController;
@@ -36,6 +37,61 @@ use Illuminate\Support\Facades\Route;
 |   crear-editar-registros  -> nivel 2 y 3     (store, update)
 |   eliminar-registros      -> solo nivel 3    (destroy)
 */
+
+/*
+|--------------------------------------------------------------------------
+| API v1 — Actividad 4.2  (prefijo /api/v1, SIN autenticación)
+|--------------------------------------------------------------------------
+| Endpoints públicos: no usan auth:sanctum, roles ni permisos. Toda solicitud
+| pasa por Validator::make() y por la comprobación de existencia con find().
+|
+| Todas las respuestas usan el formato estándar:
+|   { "success": bool, "message": string, "data": ..., "errors": ... }
+|
+| Middleware "api.v1" (App\Http\Middleware\PrepararSolicitudApi):
+|   fuerza Accept: application/json y responde 400 (JSON mal formado),
+|   413 (archivo demasiado grande) y 415 (Content-Type no admitido).
+|
+| Los {id} no se restringen con whereNumber(): el controlador responde 400
+| cuando el identificador no es un entero positivo, en vez de un 404 genérico.
+*/
+Route::prefix('v1')->middleware('api.v1')->group(function () {
+
+    // ----- Productos (recurso con imagen) -----
+    Route::controller(V1\ProductoController::class)->group(function () {
+        Route::get('/productos', 'index');
+        Route::post('/productos', 'store');
+        Route::get('/productos/{id}', 'show');
+        Route::put('/productos/{id}', 'update');
+        Route::patch('/productos/{id}', 'patch');
+        Route::delete('/productos/{id}', 'destroy');
+
+        // Imagen asociada (multipart/form-data, campo "imagen")
+        Route::post('/productos/{id}/imagen', 'subirImagen');
+        Route::delete('/productos/{id}/imagen', 'eliminarImagen');
+    });
+
+    // ----- Especialidades médicas -----
+    Route::controller(V1\EspecialidadController::class)->group(function () {
+        Route::get('/especialidades', 'index');
+        Route::post('/especialidades', 'store');
+        Route::get('/especialidades/{id}', 'show');
+        Route::get('/especialidades/{id}/medicos', 'medicos');
+        Route::put('/especialidades/{id}', 'update');
+        Route::patch('/especialidades/{id}', 'patch');
+        Route::delete('/especialidades/{id}', 'destroy');
+    });
+
+    // ----- Servicios médicos -----
+    Route::controller(V1\ServicioMedicoController::class)->group(function () {
+        Route::get('/servicios-medicos', 'index');
+        Route::post('/servicios-medicos', 'store');
+        Route::get('/servicios-medicos/{id}', 'show');
+        Route::put('/servicios-medicos/{id}', 'update');
+        Route::patch('/servicios-medicos/{id}', 'patch');
+        Route::delete('/servicios-medicos/{id}', 'destroy');
+    });
+});
 
 // ---------- Públicas ----------
 // Cada login tiene su propio límite de 5 intentos por minuto (tercer parámetro de throttle)

@@ -1,0 +1,9 @@
+$kind: collection
+description: |-
+  Endpoints públicos /api/v1 (sin autenticación). Todas las respuestas: { success, message, data, errors }.
+  Cambia base_url si usas XAMPP (por ejemplo http://localhost/Farmacia%20API/public/api/v1).
+variables:
+  base_url: http://localhost:8000/api/v1
+  producto_id: "1"
+  especialidad_id: "1"
+  servicio_id: "1"

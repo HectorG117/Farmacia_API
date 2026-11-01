@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/productos?buscar=para&categoria=Medicamentos"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  buscar: para
+  categoria: Medicamentos
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 200", () => pm.response.to.have.status(200));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+    language: text/javascript
+order: 2000

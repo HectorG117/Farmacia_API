@@ -1,0 +1,32 @@
+$kind: http-request
+description: Selecciona un archivo JPG, PNG o WEBP (máx. 2 MB) en el campo imagen.
+url: "{{base_url}}/productos"
+method: POST
+headers:
+  Accept: application/json
+body:
+  type: formdata
+  content:
+    - type: text
+      key: nombre
+      value: Ibuprofeno 400 mg
+    - type: text
+      key: precio
+      value: "62.90"
+    - type: text
+      key: stock
+      value: "80"
+    - type: text
+      key: categoria
+      value: Medicamentos
+    - type: file
+      key: imagen
+      src: []
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 201", () => pm.response.to.have.status(201));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+      if (pm.response.code === 201) pm.collectionVariables.set("producto_id", pm.response.json().data.id);
+    language: text/javascript
+order: 4000

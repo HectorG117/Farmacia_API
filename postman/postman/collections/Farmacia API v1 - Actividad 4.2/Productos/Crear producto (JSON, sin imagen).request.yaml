@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{base_url}}/productos"
+method: POST
+headers:
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "Paracetamol 500 mg",
+      "precio": 45.5,
+      "stock": 120,
+      "categoria": "Medicamentos"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 201", () => pm.response.to.have.status(201));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+      if (pm.response.code === 201) pm.collectionVariables.set("producto_id", pm.response.json().data.id);
+    language: text/javascript
+order: 3000

@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{base_url}}/especialidades"
+method: POST
+headers:
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "Dermatología",
+      "descripcion": "Diagnóstico y tratamiento de enfermedades de la piel."
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 201", () => pm.response.to.have.status(201));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+      if (pm.response.code === 201) pm.collectionVariables.set("especialidad_id", pm.response.json().data.id);
+    language: text/javascript
+order: 2000

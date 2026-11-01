@@ -1,6 +1,0 @@
-$kind: http-request
-url: "{{base_url}}/recetas/{{receta_id}}"
-method: DELETE
-headers:
-  Accept: application/json
-order: 5000

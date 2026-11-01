@@ -111,3 +111,30 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## API v1 — Actividad 4.2 (sin autenticación)
+
+Endpoints públicos bajo `/api/v1` (no usan Sanctum, roles ni permisos). Todas las respuestas tienen la forma:
+
+```json
+{ "success": true, "message": "Producto consultado correctamente", "data": { }, "errors": null }
+```
+
+| Recurso | Endpoints |
+|---|---|
+| Productos (con imagen) | `GET/POST /api/v1/productos` · `GET/PUT/PATCH/DELETE /api/v1/productos/{id}` · `POST/DELETE /api/v1/productos/{id}/imagen` |
+| Especialidades | `GET/POST /api/v1/especialidades` · `GET/PUT/PATCH/DELETE /api/v1/especialidades/{id}` · `GET /api/v1/especialidades/{id}/medicos` |
+| Servicios médicos | `GET/POST /api/v1/servicios-medicos` · `GET/PUT/PATCH/DELETE /api/v1/servicios-medicos/{id}` |
+
+Archivos involucrados:
+
+- `app/Http/Controllers/Api/V1/*` — controladores con `Validator::make()` y `find()`.
+- `app/Support/RespuestaApi.php` — formato estándar de éxito y error.
+- `app/Http/Middleware/PrepararSolicitudApi.php` — 400 (JSON mal formado), 413 (archivo demasiado grande) y 415 (Content-Type no admitido).
+- `bootstrap/app.php` — convierte cualquier excepción (404, 405, 413, 422, 500…) al formato estándar sin exponer detalles internos.
+
+Imágenes: se guardan en `storage/app/public/productos` con nombre `producto_<uuid>.<ext>`; la BD guarda la ruta (`imagen`) y la API devuelve además la URL pública (`imagen_url`). Requiere `php artisan storage:link` y que `APP_URL` en `.env` sea la URL real del proyecto.
+
+Para enviar una imagen al actualizar se usa `POST` con el campo `_method=PATCH` (PHP no procesa archivos en `PUT`/`PATCH` reales), o el endpoint `POST /api/v1/productos/{id}/imagen`.
+
+Colección de pruebas: `FarmaciaAPI-v1.postman_collection.json`.

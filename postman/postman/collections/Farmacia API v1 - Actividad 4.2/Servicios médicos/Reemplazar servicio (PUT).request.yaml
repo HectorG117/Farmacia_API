@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{base_url}}/servicios-medicos/{{servicio_id}}"
+method: PUT
+headers:
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "Toma de presión arterial",
+      "descripcion": "Medición y registro.",
+      "costo": 40,
+      "activo": true
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 200", () => pm.response.to.have.status(200));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+    language: text/javascript
+order: 5000

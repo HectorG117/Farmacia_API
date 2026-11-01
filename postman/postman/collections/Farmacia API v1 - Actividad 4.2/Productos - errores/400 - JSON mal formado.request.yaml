@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{base_url}}/productos"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: '{"nombre": "Aspirina", "precio": }'
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 400", () => pm.response.to.have.status(400));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+    language: text/javascript
+order: 6000

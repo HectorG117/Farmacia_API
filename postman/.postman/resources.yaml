@@ -2,5 +2,4 @@ workspace:
   id: cab87b19-de1f-486d-9ddc-7088db518fd2
 cloudResources:
   collections:
-    ../postman/collections/Farmacia API: 58799300-109d27db-1870-44dd-b933-89f0185ed0de
-    ../postman/collections/Farmacia API - Recetas: 58799300-f063f243-5ec2-446a-a0dc-7e576b3b26a3
+    ../postman/collections/Farmacia API v1 - Actividad 4.2: 58799300-56d5e59d-b2db-4691-8473-d2ee2942d5bd

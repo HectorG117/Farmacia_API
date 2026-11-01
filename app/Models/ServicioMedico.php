@@ -18,5 +18,11 @@ class ServicioMedico extends Model
         'nombre',
         'descripcion',
         'costo',
+        'activo',
+    ];
+
+    protected $casts = [
+        'costo'  => 'decimal:2',
+        'activo' => 'boolean',
     ];
 }

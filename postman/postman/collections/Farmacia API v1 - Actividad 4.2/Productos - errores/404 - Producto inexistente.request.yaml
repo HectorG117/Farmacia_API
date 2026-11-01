@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{base_url}}/productos/999999"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 404", () => pm.response.to.have.status(404));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+    language: text/javascript
+order: 4000

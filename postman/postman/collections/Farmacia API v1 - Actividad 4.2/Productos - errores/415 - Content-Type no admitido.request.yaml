@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{base_url}}/productos"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: text/plain
+body:
+  type: text
+  content: nombre=Aspirina
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 415", () => pm.response.to.have.status(415));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+    language: text/javascript
+order: 9000

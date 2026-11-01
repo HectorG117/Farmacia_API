@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Especialidad extends Model
 {
@@ -19,4 +20,14 @@ class Especialidad extends Model
         'nombre',
         'descripcion',
     ];
+
+    // Médicos que tienen esta especialidad
+    public function medicos(): HasMany
+    {
+        return $this->hasMany(
+            Medico::class,
+            'especialidad_id',
+            'id_especialidad'
+        );
+    }
 }

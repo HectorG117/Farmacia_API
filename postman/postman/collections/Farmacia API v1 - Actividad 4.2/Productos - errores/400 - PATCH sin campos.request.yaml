@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/productos/1"
+method: PATCH
+headers:
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "color": "rojo"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 400", () => pm.response.to.have.status(400));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+    language: text/javascript
+order: 7000

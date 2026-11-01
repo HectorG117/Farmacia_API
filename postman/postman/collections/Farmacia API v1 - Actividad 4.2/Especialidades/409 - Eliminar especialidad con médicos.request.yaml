@@ -1,0 +1,13 @@
+$kind: http-request
+description: Usa el id de una especialidad que tenga médicos asignados.
+url: "{{base_url}}/especialidades/1"
+method: DELETE
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 409", () => pm.response.to.have.status(409));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+    language: text/javascript
+order: 9000

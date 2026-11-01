@@ -1,0 +1,19 @@
+$kind: http-request
+description: Selecciona un PDF o TXT para ver el error de validación.
+url: "{{base_url}}/productos/1/imagen"
+method: POST
+headers:
+  Accept: application/json
+body:
+  type: formdata
+  content:
+    - type: file
+      key: imagen
+      src: []
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 422", () => pm.response.to.have.status(422));
+      pm.test("Formato estándar", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys("success","message","data","errors"); });
+    language: text/javascript
+order: 3000
