@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "b051a47e-d1cb-443b-b78d-9079db33047d",
-    "name": "Farmacia API v1 - Actividad 4.2",
-    "description": "Endpoints públicos /api/v1 (sin autenticación). Todas las respuestas: { success, message, data, errors }.\nCambia base_url si usas XAMPP (por ejemplo http://localhost/Farmacia%20API/public/api/v1).",
+    "name": "Farmacia API v1 - Actividades 4.2 y 4.3",
+    "description": "Endpoints públicos y backoffice /api/v1/admin con Sanctum. Todas las respuestas: { success, message, data, errors }.\nCambia base_url si usas XAMPP (por ejemplo http://localhost/Farmacia%20API/public/api/v1).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1629,6 +1629,239 @@
           }
         }
       ]
+    },
+    {
+      "name": "Administración v1 (Sanctum)",
+      "item": [
+        {
+          "name": "Login de administrador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"admin_token\", pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/login",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_usuario\": \"{{admin_username}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "401 - Recursos sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Formato estándar\", () => { const j = pm.response.json(); pm.expect(j).to.have.all.keys(\"success\",\"message\",\"data\",\"errors\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/admin/recursos",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "recursos"]
+            }
+          }
+        },
+        {
+          "name": "Listar recursos (incluye papelera)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/recursos",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "recursos"]
+            }
+          }
+        },
+        {
+          "name": "Crear recurso",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"admin_resource_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/recursos",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "recursos"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Producto de prueba\",\n  \"precio\": 25.50,\n  \"stock\": 10,\n  \"categoria\": \"Medicamentos\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Consultar recurso",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/recursos/{{admin_resource_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "recursos", "{{admin_resource_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar recurso (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/recursos/{{admin_resource_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "recursos", "{{admin_resource_id}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock\": 8\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Reemplazar recurso (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/recursos/{{admin_resource_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "recursos", "{{admin_resource_id}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Producto actualizado\",\n  \"precio\": 27.50,\n  \"stock\": 8,\n  \"categoria\": \"Medicamentos\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Eliminar recurso (lógico)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/recursos/{{admin_resource_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "recursos", "{{admin_resource_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Listar usuarios y administradores",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/usuarios",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "usuarios"]
+            }
+          }
+        },
+        {
+          "name": "Cambiar estado de usuario",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/usuarios/{{admin_user_id}}/estado",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "usuarios", "{{admin_user_id}}", "estado"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"usuario\",\n  \"activo\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Cerrar sesión y revocar token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/logout",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "logout"]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -1646,6 +1879,26 @@
     },
     {
       "key": "servicio_id",
+      "value": "1"
+    },
+    {
+      "key": "admin_username",
+      "value": "admin"
+    },
+    {
+      "key": "admin_password",
+      "value": "CAMBIAR-POR-TU-CONTRASENA"
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "admin_resource_id",
+      "value": "1"
+    },
+    {
+      "key": "admin_user_id",
       "value": "1"
     }
   ]

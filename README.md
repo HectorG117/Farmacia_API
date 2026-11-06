@@ -112,7 +112,33 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-## API v1 — Actividad 4.2 (sin autenticación)
+## API v1 — Actividad 4.3 (administración con Sanctum)
+
+El backoffice está separado de los endpoints públicos bajo `/api/v1/admin`. Inicia sesión con una cuenta de la tabla `administradores` (`nombre_usuario` y `password`); el token Sanctum resultante debe enviarse como `Authorization: Bearer <token>`.
+
+| Método | Endpoint | Permiso |
+|---|---|---|
+| `POST` | `/api/v1/admin/login` | Público; valida cuenta activa y emite token `admin` |
+| `POST` | `/api/v1/admin/logout` | Administrador autenticado; revoca el token actual |
+| `GET` | `/api/v1/admin/recursos` | Nivel 1, 2 o 3; productos, incluidos los eliminados lógicamente |
+| `GET` | `/api/v1/admin/recursos/{id}` | Nivel 1, 2 o 3 |
+| `POST` | `/api/v1/admin/recursos` | Nivel 2 o 3 |
+| `PUT/PATCH` | `/api/v1/admin/recursos/{id}` | Nivel 2 o 3 |
+| `DELETE` | `/api/v1/admin/recursos/{id}` | Nivel 3; eliminación lógica |
+| `GET` | `/api/v1/admin/usuarios` | Nivel 1, 2 o 3; lista usuarios y administradores por separado |
+| `PATCH` | `/api/v1/admin/usuarios/{id}/estado` | Nivel 3 |
+
+El endpoint `recursos` administra el catálogo de productos y admite `nombre`, `precio`, `stock`, `categoria` y una imagen opcional. El listado se pagina de 15 en 15 (`?page=2`) e incluye la papelera. Para editar parcialmente, `PATCH` acepta solo los campos que cambian. Las imágenes se guardan en el disco público igual que en los endpoints v1 del catálogo. Las respuestas exitosas y los errores siguen el formato `{ success, message, data, errors }`; las validaciones están en Form Requests y las salidas usan Json Resources.
+
+Para cambiar un estado se debe especificar el tipo de cuenta, ya que las tablas `usuarios` y `administradores` tienen IDs independientes:
+
+```json
+{ "tipo": "usuario", "activo": false }
+```
+
+Los Gates reutilizan los niveles administrativos existentes: nivel 1 consulta, nivel 2 crea/edita y nivel 3 elimina y administra estados. Un administrador no puede desactivar su propia cuenta ni al último administrador activo de nivel 3. La colección de Postman incluye las solicitudes de esta API; configura `admin_username` y `admin_password` en sus variables antes de ejecutar el login.
+
+## API v1 — Actividad 4.2 (endpoints públicos)
 
 Endpoints públicos bajo `/api/v1` (no usan Sanctum, roles ni permisos). Todas las respuestas tienen la forma:
 

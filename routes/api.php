@@ -56,6 +56,31 @@ use Illuminate\Support\Facades\Route;
 | cuando el identificador no es un entero positivo, en vez de un 404 genérico.
 */
 Route::prefix('v1')->middleware('api.v1')->group(function () {
+    Route::post('/admin/login', [V1\AdminController::class, 'login'])
+        ->middleware('throttle:5,1,login-admin-v1');
+
+    Route::prefix('admin')
+        ->middleware(['auth:sanctum', 'rol:admin'])
+        ->group(function () {
+            Route::post('/logout', [V1\AdminController::class, 'logout']);
+
+            Route::middleware('can:ver-registros')->group(function () {
+                Route::get('/recursos', [V1\AdminController::class, 'indexResources']);
+                Route::get('/recursos/{id}', [V1\AdminController::class, 'showResource'])->whereNumber('id');
+                Route::get('/usuarios', [V1\AdminController::class, 'indexUsers']);
+            });
+
+            Route::middleware('can:crear-editar-registros')->group(function () {
+                Route::post('/recursos', [V1\AdminController::class, 'storeResource']);
+                Route::put('/recursos/{id}', [V1\AdminController::class, 'updateResource'])->whereNumber('id');
+                Route::patch('/recursos/{id}', [V1\AdminController::class, 'updateResource'])->whereNumber('id');
+            });
+
+            Route::middleware('can:eliminar-registros')->group(function () {
+                Route::delete('/recursos/{id}', [V1\AdminController::class, 'destroyResource'])->whereNumber('id');
+                Route::patch('/usuarios/{id}/estado', [V1\AdminController::class, 'updateUserStatus'])->whereNumber('id');
+            });
+        });
 
     // ----- Productos (recurso con imagen) -----
     Route::controller(V1\ProductoController::class)->group(function () {

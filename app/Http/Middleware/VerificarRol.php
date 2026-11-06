@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Administrador;
 use App\Models\Usuario;
+use App\Support\RespuestaApi;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,10 +33,19 @@ class VerificarRol
 
         $token = $usuario?->currentAccessToken();
 
-        if (!$cuentaValida || !$token || !$token->can($rol)) {
-            return response()->json([
-                'mensaje' => "Tu token no tiene permiso para las rutas del rol \"{$rol}\".",
-            ], 403);
+        if ($usuario instanceof Administrador && ! $usuario->activo) {
+            return RespuestaApi::error('La cuenta de administrador está deshabilitada.', 403);
+        }
+
+        if ($usuario instanceof Usuario && ! $usuario->activo) {
+            return RespuestaApi::error('La cuenta está deshabilitada.', 403);
+        }
+
+        if (! $cuentaValida || ! $token || ! $token->can($rol)) {
+            return RespuestaApi::error(
+                "Tu token no tiene permiso para las rutas del rol \"{$rol}\".",
+                403
+            );
         }
 
         return $next($request);
