@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\AdminRecordController;
 use App\Http\Controllers\Api\V1;
+use App\Http\Controllers\Api\V1\Client\AuthController as ClientAuthController;
+use App\Http\Controllers\Api\V1\Client\CatalogoController as ClientCatalogoController;
+use App\Http\Controllers\Api\V1\Client\PedidoController as ClientPedidoController;
+use App\Http\Controllers\Api\V1\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\EspecialidadController;
 use App\Http\Controllers\ExpedienteMedicoController;
@@ -22,40 +26,47 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | API Routes  (prefijo /api)
 |--------------------------------------------------------------------------
-| Cada rol tiene su propio controlador (app/Http/Controllers/Roles) y su login,
-| que entrega un token Bearer de Sanctum válido solo para ese rol:
-|
-|   ADMIN     POST /api/admin/login     (nombre_usuario + password)
-|   MÉDICO    POST /api/medico/login    (email + password)
-|   PACIENTE  POST /api/paciente/login  (email + password)  ·  POST /api/paciente/registro
-|
-| El middleware "rol:<rol>" (App\Http\Middleware\VerificarRol) impide que el token
-| de un rol use las rutas de otro.
-|
-| Permisos del administrador por nivel (mismos Gates que el panel web, AppServiceProvider):
-|   ver-registros           -> nivel 1, 2 y 3  (index, show)
-|   crear-editar-registros  -> nivel 2 y 3     (store, update)
-|   eliminar-registros      -> solo nivel 3    (destroy)
 */
 
 /*
 |--------------------------------------------------------------------------
-| API v1 — Actividad 4.2  (prefijo /api/v1, SIN autenticación)
+| API v1 — Actividad 4.2 y Actividad 4.4 (prefijo /api/v1)
 |--------------------------------------------------------------------------
-| Endpoints públicos: no usan auth:sanctum, roles ni permisos. Toda solicitud
-| pasa por Validator::make() y por la comprobación de existencia con find().
-|
-| Todas las respuestas usan el formato estándar:
-|   { "success": bool, "message": string, "data": ..., "errors": ... }
-|
-| Middleware "api.v1" (App\Http\Middleware\PrepararSolicitudApi):
-|   fuerza Accept: application/json y responde 400 (JSON mal formado),
-|   413 (archivo demasiado grande) y 415 (Content-Type no admitido).
-|
-| Los {id} no se restringen con whereNumber(): el controlador responde 400
-| cuando el identificador no es un entero positivo, en vez de un 404 genérico.
 */
 Route::prefix('v1')->middleware('api.v1')->group(function () {
+
+    // =========================================================================
+    // MÓDULO DEL CLIENTE (Actividad 4.4: Client API & Data Ownership)
+    // Prefijo resultante: /api/v1/client/
+    // =========================================================================
+    Route::prefix('client')->group(function () {
+
+        // --- Endpoints Públicos ---
+        Route::post('/register', [ClientAuthController::class, 'register']);
+        Route::post('/login', [ClientAuthController::class, 'login']);
+        Route::get('/catalogo', [ClientCatalogoController::class, 'index']);
+        Route::get('/catalogo/{id}', [ClientCatalogoController::class, 'show']);
+
+        // --- Endpoints Privados / Protección Sanctum ---
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/logout', [ClientAuthController::class, 'logout']);
+
+            // Gestión de Perfil Propio
+            Route::get('/perfil', [ClientProfileController::class, 'show']);
+            Route::match(['put', 'patch'], '/perfil', [ClientProfileController::class, 'update']);
+
+            // Gestión de Registros / Pedidos Propios (Data Ownership)
+            Route::get('/mis-registros', [ClientPedidoController::class, 'index']);
+            Route::post('/mis-registros', [ClientPedidoController::class, 'store']);
+            Route::get('/mis-registros/{pedido}', [ClientPedidoController::class, 'show']);
+            Route::match(['put', 'patch'], '/mis-registros/{pedido}', [ClientPedidoController::class, 'update']);
+            Route::delete('/mis-registros/{pedido}', [ClientPedidoController::class, 'destroy']);
+        });
+    });
+
+    // =========================================================================
+    // Endpoints API v1 Existentes
+    // =========================================================================
     Route::post('/admin/login', [V1\AdminController::class, 'login'])
         ->middleware('throttle:5,1,login-admin-v1');
 
@@ -91,7 +102,6 @@ Route::prefix('v1')->middleware('api.v1')->group(function () {
         Route::patch('/productos/{id}', 'patch');
         Route::delete('/productos/{id}', 'destroy');
 
-        // Imagen asociada (multipart/form-data, campo "imagen")
         Route::post('/productos/{id}/imagen', 'subirImagen');
         Route::delete('/productos/{id}/imagen', 'eliminarImagen');
     });
@@ -118,8 +128,7 @@ Route::prefix('v1')->middleware('api.v1')->group(function () {
     });
 });
 
-// ---------- Públicas ----------
-// Cada login tiene su propio límite de 5 intentos por minuto (tercer parámetro de throttle)
+// ---------- Rutas Públicas de Legacy/Panel ----------
 Route::get('/productos', [ProductoController::class, 'index']);
 Route::get('/productos/{id}', [ProductoController::class, 'show'])->whereNumber('id');
 
@@ -128,7 +137,6 @@ Route::post('/medico/login', [Roles\MedicoController::class, 'login'])->middlewa
 Route::post('/paciente/login', [Roles\PacienteController::class, 'login'])->middleware('throttle:5,1,login-paciente');
 Route::post('/paciente/registro', [Roles\PacienteController::class, 'registro'])->middleware('throttle:5,1,registro-paciente');
 
-// Ruta anterior del login de administrador (se conserva para la colección de Postman)
 Route::post('/login', [Roles\AdminController::class, 'login'])->middleware('throttle:5,1,login-admin');
 
 /*
@@ -148,7 +156,6 @@ Route::middleware(['auth:sanctum', 'rol:medico'])->prefix('medico')->group(funct
 
     Route::get('/pacientes', [Roles\MedicoController::class, 'pacientes']);
 
-    // Sin DELETE: para anular una receta se envía "estado": "Cancelada"
     Route::get('/recetas', [Roles\MedicoController::class, 'recetas']);
     Route::post('/recetas', [Roles\MedicoController::class, 'crearReceta']);
     Route::get('/recetas/{id}', [Roles\MedicoController::class, 'receta'])->whereNumber('id');
@@ -157,7 +164,7 @@ Route::middleware(['auth:sanctum', 'rol:medico'])->prefix('medico')->group(funct
 
 /*
 |--------------------------------------------------------------------------
-| Rol PACIENTE  (/api/paciente/...)  — solo su propia información
+| Rol PACIENTE  (/api/paciente/...)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth:sanctum', 'rol:paciente'])->prefix('paciente')->group(function () {
@@ -171,7 +178,6 @@ Route::middleware(['auth:sanctum', 'rol:paciente'])->prefix('paciente')->group(f
     Route::get('/expedientes', [Roles\PacienteController::class, 'expedientes']);
     Route::get('/expedientes/{id}', [Roles\PacienteController::class, 'expediente'])->whereNumber('id');
 
-    // Sin DELETE: el paciente solo elige qué productos comprar y cuántos
     Route::get('/recetas', [Roles\PacienteController::class, 'recetas']);
     Route::get('/recetas/{id}', [Roles\PacienteController::class, 'receta'])->whereNumber('id');
     Route::put('/recetas/{id}/compra', [Roles\PacienteController::class, 'actualizarCompra'])->whereNumber('id');
@@ -179,7 +185,7 @@ Route::middleware(['auth:sanctum', 'rol:paciente'])->prefix('paciente')->group(f
 
 /*
 |--------------------------------------------------------------------------
-| Rol ADMIN  (/api/admin/... y los recursos /api/medicos, /api/citas, ...)
+| Rol ADMIN  (/api/admin/... y recursos varios)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth:sanctum', 'rol:admin'])->group(function () {
@@ -187,10 +193,9 @@ Route::middleware(['auth:sanctum', 'rol:admin'])->group(function () {
     Route::get('/admin/perfil', [Roles\AdminController::class, 'perfil']);
     Route::get('/admin/dashboard', [Roles\AdminController::class, 'dashboard'])->middleware('can:ver-registros');
 
-    // Rutas anteriores (se conservan para la colección de Postman)
     Route::post('/logout', [Roles\AdminController::class, 'logout']);
     Route::get('/me', [Roles\AdminController::class, 'perfil']);
-    Route::get('/user', [Roles\AdminController::class, 'perfil']); // ruta por defecto de Sanctum
+    Route::get('/user', [Roles\AdminController::class, 'perfil']);
 
     $numericos = [
         'medico'     => '[0-9]+',
@@ -200,7 +205,6 @@ Route::middleware(['auth:sanctum', 'rol:admin'])->group(function () {
         'detalle'    => '[0-9]+',
     ];
 
-    // Módulos genéricos administrados por AdminRecordController (el módulo se lee del nombre de la ruta)
     $modulos = ['usuarios', 'carritos', 'carrito-detalles', 'users'];
 
     // ===== NIVEL 1, 2 Y 3: Consulta =====
@@ -235,7 +239,6 @@ Route::middleware(['auth:sanctum', 'rol:admin'])->group(function () {
         Route::apiResource('recetas', RecetaController::class)->only(['store', 'update'])->where($numericos);
         Route::apiResource('recetas.detalles', RecetaDetalleController::class)->only(['store', 'update'])->where($numericos);
 
-        // Productos (multipart/form-data por la imagen; para editar con imagen usa POST + _method=PUT)
         Route::post('/productos', [ProductoController::class, 'store']);
         Route::put('/productos/{id}', [ProductoController::class, 'update'])->whereNumber('id');
 
@@ -262,7 +265,6 @@ Route::middleware(['auth:sanctum', 'rol:admin'])->group(function () {
         Route::apiResource('recetas', RecetaController::class)->only(['destroy'])->where($numericos);
         Route::apiResource('recetas.detalles', RecetaDetalleController::class)->only(['destroy'])->where($numericos);
 
-        // Productos: papelera (borrado lógico), restaurar y borrado definitivo
         Route::get('/productos/papelera', [ProductoController::class, 'papelera']);
         Route::delete('/productos/{id}', [ProductoController::class, 'destroy'])->whereNumber('id');
         Route::put('/productos/{id}/restaurar', [ProductoController::class, 'restore'])->whereNumber('id');
@@ -278,7 +280,6 @@ Route::middleware(['auth:sanctum', 'rol:admin'])->group(function () {
             Route::delete("/{$modulo}/{id}", [AdminRecordController::class, 'destroy'])->whereNumber('id')->name("admin.{$modulo}.destroy");
         }
 
-        // Exclusivos del nivel 3: roles y bitácora
         Route::apiResource('roles', RolController::class)->parameters(['roles' => 'id'])->where(['id' => '[0-9]+']);
         Route::apiResource('logs', LogController::class)->only(['index', 'show', 'store', 'destroy'])->parameters(['logs' => 'id'])->where(['id' => '[0-9]+']);
     });
