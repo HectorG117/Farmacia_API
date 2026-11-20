@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminRecordController;
 use App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\V1\Client\AuthController as ClientAuthController;
 use App\Http\Controllers\Api\V1\Client\CatalogoController as ClientCatalogoController;
+use App\Http\Controllers\Api\V1\Client\InformacionController as ClientInformacionController;
 use App\Http\Controllers\Api\V1\Client\PedidoController as ClientPedidoController;
 use App\Http\Controllers\Api\V1\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\CitaController;
@@ -44,8 +45,10 @@ Route::prefix('v1')->middleware('api.v1')->group(function () {
         // --- Endpoints Públicos ---
         Route::post('/register', [ClientAuthController::class, 'register']);
         Route::post('/login', [ClientAuthController::class, 'login']);
+        // Actividad 5.3: consumo público (sin Authorization: Bearer) desde el cliente final
         Route::get('/catalogo', [ClientCatalogoController::class, 'index']);
-        Route::get('/catalogo/{id}', [ClientCatalogoController::class, 'show']);
+        Route::get('/catalogo/{id}', [ClientCatalogoController::class, 'show'])->whereNumber('id');
+        Route::get('/informacion', [ClientInformacionController::class, 'index']);
 
         // --- Endpoints Privados / Protección Sanctum ---
         Route::middleware('auth:sanctum')->group(function () {
